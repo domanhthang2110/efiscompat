@@ -1,33 +1,30 @@
 package com.yukami.epicironcompat.event;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
 import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.RenderArmEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
-import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import yesman.epicfight.world.entity.eventlistener.*;
-
-
 import static com.yukami.epicironcompat.Main.MODID;
+import static com.yukami.epicironcompat.animation.Animation.*;
 import static yesman.epicfight.gameasset.Animations.*;
 
 @Mod.EventBusSubscriber(
@@ -39,13 +36,27 @@ public class Event {
     @SubscribeEvent
     public static void beforeSpellCast(SpellPreCastEvent event){
         Player player = event.getEntity();
-        StaticAnimation castAnimation = null;
+        StaticAnimation castAnimation;
         ServerPlayerPatch playerpatch;
-        var pmd = MagicData.getPlayerMagicData(player);
-        //logger.info(pmd.getCastType() + " | " + pmd.isCasting() + " | " + pmd.getCastingSpellId() + " | " + pmd.getSyncedData());
+        String sid = event.getSpellId();
+        var spell = SpellRegistry.getSpell(sid);
+        CastType castType = spell.getCastType();
         if (player instanceof ServerPlayer) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
-            castAnimation = playerpatch.getAnimator().getLivingAnimation(null, BIPED_DIG);
+            switch (castType) {
+                case CONTINUOUS:
+                    castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CHANTING_ONE_HAND);
+                    break;
+                case LONG:
+                    castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CHANTING_ONE_HAND);
+                    break;
+                case INSTANT:
+                    castAnimation = null;
+                    break;
+                default:
+                    castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CHANTING_ONE_HAND);
+                    break;
+            }
             if (castAnimation != null) {
                 playerpatch.playAnimationSynchronized(castAnimation, 0);
             }
@@ -57,16 +68,25 @@ public class Event {
         StaticAnimation castAnimation;
         ServerPlayerPatch playerpatch;
         var playerMagicData = MagicData.getPlayerMagicData(player);
+        CastType castType = playerMagicData.getCastType();
         if (player instanceof ServerPlayer ) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
-            if (playerMagicData.getCastType() == CastType.CONTINUOUS) {
-                castAnimation = playerpatch.getAnimator().getLivingAnimation(null, BIPED_SPYGLASS_USE);
+            switch (castType) {
+                case CONTINUOUS:
+                    castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CHANTING_TWO_HAND_FRONT);
+                    break;
+                case LONG:
+                    castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CASTING_ONE_HAND);
+                    break;
+                case INSTANT:
+                    castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CASTING_ONE_HAND);
+                    break;
+                default:
+                    castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CASTING_ONE_HAND);
+                    break;
             }
-            else {
-                castAnimation = playerpatch.getAnimator().getLivingAnimation(null, BIPED_JAVELIN_THROW);
-            }
-
             if (castAnimation != null) {
+                logger.info("Anim: "+castAnimation);
                 playerpatch.playAnimationSynchronized(castAnimation, 0);
             }
         }
