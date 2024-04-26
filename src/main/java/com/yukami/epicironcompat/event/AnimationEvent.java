@@ -5,13 +5,9 @@ import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
@@ -21,13 +17,12 @@ import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import static com.yukami.epicironcompat.Main.MODID;
 import static com.yukami.epicironcompat.animation.Animation.*;
-import static yesman.epicfight.gameasset.Animations.*;
 
 @Mod.EventBusSubscriber(
-        modid = "efiscompat"
+        modid = "efiscompat", bus = Mod.EventBusSubscriber.Bus.FORGE
 )
 
-public class Event {
+public class AnimationEvent {
     private static final Logger logger = LogManager.getLogger(MODID);
     @SubscribeEvent
     public static void beforeSpellCast(SpellPreCastEvent event){
@@ -53,7 +48,7 @@ public class Event {
                     castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CHANTING_ONE_HAND);
                     break;
             }
-            if (castAnimation != null) {
+            if (castAnimation != null && Minecraft.getInstance().level.isClientSide) {
                 playerpatch.playAnimationSynchronized(castAnimation, 0);
             }
         }
@@ -81,22 +76,9 @@ public class Event {
                     castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CASTING_ONE_HAND);
                     break;
             }
-            if (castAnimation != null) {
-                logger.info("Anim: "+castAnimation);
-                playerpatch.playAnimationSynchronized(castAnimation, 0);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void beforeLivingRender(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
-        var livingEntity = event.getEntity();
-        if (livingEntity instanceof Player) {
-            var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
-            if (syncedData.isCasting()) {
-                //Try to render siphoning ray
-                SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
-            }
+        if (castAnimation != null) {
+            logger.info("Anim: "+castAnimation);
+            playerpatch.playAnimationSynchronized(castAnimation, 0);
         }
     }
 
