@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,7 +18,7 @@ import static com.yukami.epicironcompat.Main.MODID;
 import static com.yukami.epicironcompat.animation.Animation.*;
 
 @Mod.EventBusSubscriber(
-        modid = "efiscompat", bus = Mod.EventBusSubscriber.Bus.FORGE
+        modid = "efiscompat"
 )
 
 public class AnimationEvent {
@@ -43,13 +42,13 @@ public class AnimationEvent {
                     castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CHANTING_ONE_HAND);
                     break;
                 case INSTANT:
-                    castAnimation = null;
+                    castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CHANTING_ONE_HAND);
                     break;
                 default:
                     castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CHANTING_ONE_HAND);
                     break;
             }
-            if (castAnimation != null && Minecraft.getInstance().level.isClientSide) {
+            if (castAnimation != null) {
                 playerpatch.playAnimationSynchronized(castAnimation, 0);
             }
         }
@@ -62,7 +61,7 @@ public class AnimationEvent {
         ServerPlayerPatch playerpatch;
         var playerMagicData = MagicData.getPlayerMagicData(player);
         CastType castType = playerMagicData.getCastType();
-        if (player instanceof ServerPlayer) {
+        if (player instanceof ServerPlayer && castType != null) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
             switch (castType) {
                 case CONTINUOUS:
