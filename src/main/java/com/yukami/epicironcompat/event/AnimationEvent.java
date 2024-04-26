@@ -24,8 +24,9 @@ import static com.yukami.epicironcompat.animation.Animation.*;
 
 public class AnimationEvent {
     private static final Logger logger = LogManager.getLogger(MODID);
+
     @SubscribeEvent
-    public static void beforeSpellCast(SpellPreCastEvent event){
+    public static void beforeSpellCast(SpellPreCastEvent event) {
         Player player = event.getEntity();
         StaticAnimation castAnimation;
         ServerPlayerPatch playerpatch;
@@ -53,14 +54,15 @@ public class AnimationEvent {
             }
         }
     }
+
     @SubscribeEvent
-    public static void onSpellCast(SpellOnCastEvent event){
+    public static void onSpellCast(SpellOnCastEvent event) {
         Player player = event.getEntity();
         StaticAnimation castAnimation;
         ServerPlayerPatch playerpatch;
         var playerMagicData = MagicData.getPlayerMagicData(player);
         CastType castType = playerMagicData.getCastType();
-        if (player instanceof ServerPlayer ) {
+        if (player instanceof ServerPlayer) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
             switch (castType) {
                 case CONTINUOUS:
@@ -76,11 +78,13 @@ public class AnimationEvent {
                     castAnimation = playerpatch.getAnimator().getLivingAnimation(null, CASTING_ONE_HAND);
                     break;
             }
-        if (castAnimation != null) {
-            logger.info("Anim: "+castAnimation);
-            playerpatch.playAnimationSynchronized(castAnimation, 0);
+            if (castAnimation != null) {
+                logger.info("Anim: " + castAnimation);
+                playerpatch.playAnimationSynchronized(castAnimation, 0);
+            }
         }
     }
+}
 
     /*
     @SubscribeEvent
@@ -93,4 +97,3 @@ public class AnimationEvent {
         }
     }
     */
-}
