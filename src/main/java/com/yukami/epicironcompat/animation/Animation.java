@@ -19,7 +19,7 @@ public class Animation {
 
     protected static void Build(){
         HumanoidArmature biped = Armatures.BIPED;
-        CASTING_ONE_HAND = new ReboundAnimation(false, "biped/living/casting_one_hand","biped/living/casting_one_hand","biped/living/casting_one_hand","biped/living/casting_one_hand", biped);
+        CASTING_ONE_HAND = new StaticAnimation(false, "biped/living/casting_one_hand", biped);
         CASTING_TWO_HAND = new StaticAnimation(false, "biped/living/casting_one_hand", biped);
         CHANTING_ONE_HAND = new StaticAnimation(true, "biped/living/chanting_one_hand", biped);
         CHANTING_TWO_HAND = new StaticAnimation(true, "biped/living/chanting_two_hand_front", biped);

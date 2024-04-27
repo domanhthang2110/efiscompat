@@ -16,6 +16,7 @@ import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import static com.yukami.epicironcompat.Main.MODID;
 import static com.yukami.epicironcompat.animation.Animation.*;
+import static yesman.epicfight.gameasset.Animations.BIPED_JAVELIN_THROW;
 
 @Mod.EventBusSubscriber(
         modid = "efiscompat"
