@@ -18,7 +18,7 @@ import static com.yukami.epicironcompat.EpicFightIronCompat.MODID;
 import static com.yukami.epicironcompat.event.AnimationEvent.isHoldingStaff;
 
 @Mixin(ItemInHandRenderer.class)
-public abstract class MixinHideHand {
+public abstract class MixinHideItem {
     private static final Logger logger = LogManager.getLogger(MODID);
     @Inject(method = "renderItem", at = @At("HEAD"), cancellable = true)
     private void onRenderItem(LivingEntity p_270072_, ItemStack p_270793_, ItemDisplayContext p_270837_, boolean p_270203_, PoseStack p_270974_, MultiBufferSource p_270686_, int p_270103_, CallbackInfo ci) {

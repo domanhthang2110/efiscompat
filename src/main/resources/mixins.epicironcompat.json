@@ -8,10 +8,9 @@
   },
   "client": [
     "MixinBasicAttack",
-    "MixinHideHand"
+    "MixinHideItem"
   ],
   "mixins": [
-    "MixinAirAttack",
     "MixinCancelAnimation"
   ]
 }

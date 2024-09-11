@@ -17,8 +17,8 @@ public class EpicFightIronCompat
     public EpicFightIronCompat()
     {
         net.minecraftforge.fml.ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.CONFIG, "efiscompat.toml");
-        LivingMotion.ENUM_MANAGER.registerEnumCls(MODID, MagicLivingMotions.class);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(Animation::registerAnimations);
+
     }
 }
