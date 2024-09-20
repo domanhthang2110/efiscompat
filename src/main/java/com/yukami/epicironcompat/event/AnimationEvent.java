@@ -16,12 +16,14 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jline.utils.Log;
 import yesman.epicfight.api.animation.AnimationProvider;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -32,11 +34,13 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import net.minecraft.world.item.ItemStack;
+import yesman.epicfight.world.capabilities.item.CapabilityItem;
 
 import java.util.List;
 import java.util.Objects;
 
 import static com.yukami.epicironcompat.EpicFightIronCompat.MODID;
+import static com.yukami.epicironcompat.utils.CompatUtils.*;
 
 @Mod.EventBusSubscriber(
         modid = "efiscompat"
@@ -70,24 +74,19 @@ public class AnimationEvent {
             Pair.of(CastType.NONE, () -> Animation.CHANTING_TWO_HAND_FRONT)
     );
 
-    public static boolean isHoldingStaff (ItemStack stackA, ItemStack stackB){
-        List<? extends String> stringList = CommonConfig.staffWeaponList.get();
-        return (stringList.contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stackA.getItem())).toString()) || stringList.contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stackB.getItem())).toString()));
-    }
-
     private static StaticAnimation searchChants(Player player, CastType castType, String spellID)
     {
-        StaticAnimation castingAnims;
+        StaticAnimation chantingAnims;
         AbstractSpell spell = SpellRegistry.getSpell(spellID);
-        if (isHoldingStaff(player.getMainHandItem(), player.getMainHandItem()))
+        if (isHoldingStaff(player))
         {
-            castingAnims = MagicAnimation.getStaffCastAnimation(spell.getSpellName());
+            chantingAnims = MagicAnimation.getStaffChantAnimation(spell.getSpellName());
         }
         else
         {
-            castingAnims = MagicAnimation.getCastAnimation(spell.getSpellName());
+            chantingAnims = MagicAnimation.getChantAnimation(spell.getSpellName());
         }
-        return castingAnims;
+        return chantingAnims;
     }
 
     private static StaticAnimation searchCasts(Player player, CastType castType, String spellID)
@@ -95,14 +94,14 @@ public class AnimationEvent {
         StaticAnimation castingAnims;
         AbstractSpell spell = SpellRegistry.getSpell(spellID);
         LogUtils.getLogger().info("Spell id: {}", spell.getSpellName());
-        if (isHoldingStaff(player.getMainHandItem(), player.getMainHandItem()))
-        {
+        PlayerPatch playerpatch = EpicFightCapabilities.getEntityPatch(player, PlayerPatch.class);
+        if (playerpatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getStyle(playerpatch) == CapabilityItem.Styles.TWO_HAND ) {
+                castingAnims = MagicAnimation.getCastAnimation(spell.getSpellName());
+        } else if (isHoldingStaffMainHand(player)) {
             castingAnims = MagicAnimation.getStaffCastAnimation(spell.getSpellName());
-        }
-        else
-        {
-            castingAnims = MagicAnimation.getCastAnimation(spell.getSpellName());
-        }
+        } else if(isHoldingStaffOffHand(player)){
+            castingAnims = MagicAnimation.getStaffCastAnimationAlt(spell.getSpellName()); // Default in else block
+        } else {castingAnims = MagicAnimation.getCastAnimation(spell.getSpellName());}
         return castingAnims;
     }
 
@@ -118,10 +117,11 @@ public class AnimationEvent {
 
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
             if (castType != CastType.INSTANT) {
-                chantingAnimation = MagicAnimation.getChantAnimation(spell.getSpellName());
+                chantingAnimation = searchChants(player, castType, sid);
+                LogUtils.getLogger().info("Chant anim: {}", chantingAnimation);
             }
             if (chantingAnimation != null) {
-                playerpatch.playAnimationSynchronized(chantingAnimation, 0);
+                playerpatch.playAnimationSynchronized(chantingAnimation, 0F);
             }
         }
     }
@@ -136,10 +136,11 @@ public class AnimationEvent {
         if (player instanceof ServerPlayer && castType != null) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
             castAnimation = searchCasts(player, castType, sid);
+            LogUtils.getLogger().info("Check off hand: {}", playerpatch.getCurrentLivingMotion());
+            LogUtils.getLogger().info("Weapon cate: {}", playerpatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getStyle(playerpatch));
+            ;
             if (castAnimation != null) {
-	            //logger.info("Anim: {}", castAnimation);
                 playerpatch.playAnimationSynchronized(castAnimation, 0);
-                LogUtils.getLogger().info("Played anim: {}",castAnimation);
             }
         }
     }
