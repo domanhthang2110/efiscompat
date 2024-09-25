@@ -20,6 +20,6 @@ public abstract class MixinCancelAnimation
 	@Inject(method = "cancelCast", at = @At("HEAD"), remap = false)
 	private static void cancelCast(ServerPlayer serverPlayer, boolean triggerCooldown, CallbackInfo ci) {
 		ServerPlayerPatch playerpatch = EpicFightCapabilities.getEntityPatch(serverPlayer, ServerPlayerPatch.class);
-		playerpatch.playAnimationSynchronized(playerpatch.getAnimator().getLivingAnimation(null, Animation.EMPTY_IDLE), 0);
+		playerpatch.playAnimationSynchronized(playerpatch.getAnimator().getLivingAnimation(null, Animation.EMPTY_ANIM), 0);
 	}
 }

@@ -1,15 +1,15 @@
 {
 	"layer":"COMPOSITE_LAYER",
-	"priority":"MIDDLE",
+	"priority":"HIGHEST",
 	"masks":
 	[
 		{
 			"livingmotion":"ALL",
-			"type":"right_arms"
+			"type":"root_upper_joints"
 		},
 		{
 			"livingmotion":"IDLE",
-			"type":"right_arms"
+			"type":"none"
 		}
 	]
 }

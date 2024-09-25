@@ -1,14 +1,13 @@
 package com.yukami.epicironcompat.animation;
 
-import com.mojang.logging.LogUtils;
-import org.jline.utils.Log;
+import com.mojang.datafixers.util.Pair;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static yesman.epicfight.data.conditions.EpicFightConditions.RANDOM;
+import static com.yukami.epicironcompat.animation.Animation.*;
 
 public class MagicAnimation {
     public final String spellName;
@@ -16,31 +15,102 @@ public class MagicAnimation {
     public final StaticAnimation castAnim;
     public final StaticAnimation staffChantAnim;
     public final StaticAnimation staffCastAnim;
-    public final StaticAnimation staffCastAnimAlt;
     private static final Random RANDOM = new Random();
-    public MagicAnimation(String spellName, StaticAnimation chantAnim, StaticAnimation castAnim, StaticAnimation staffChantAnim, StaticAnimation staffCastAnim, StaticAnimation staffCastAnimAlt) {
+    public MagicAnimation(String spellName, StaticAnimation chantAnim, StaticAnimation castAnim, StaticAnimation staffChantAnim, StaticAnimation staffCastAnim) {
         this.spellName = spellName;
         this.chantAnim = chantAnim;
         this.castAnim = castAnim;
         this.staffChantAnim = staffChantAnim;
         this.staffCastAnim = staffCastAnim;
-        this.staffCastAnimAlt = staffCastAnimAlt;
     }
 
+    private static final List<Pair<StaticAnimation, StaticAnimation>> fallbackAnimationPairs = List.of(
+            Pair.of(Animation.CHANTING_ONE_HAND_TOP, Animation.CASTING_ONE_HAND_TOP),
+            Pair.of(Animation.CHANTING_ONE_HAND_FRONT, Animation.CASTING_ONE_HAND_INWARD)
+    );
 
-    private static final List<StaticAnimation> castAnimations = List.of(Animation.CASTING_ONE_HAND_TOP, Animation.CASTING_ONE_HAND_INWARD, Animation.CASTING_ONE_HAND_OUTWARD);
+    private static final List<Pair<StaticAnimation, StaticAnimation>> fallbackStaffAnimationPairs = List.of(
+            Pair.of(Animation.CHANTING_ONE_HAND_STAFF_RIGHT, Animation.CASTING_ONE_HAND_STAFF_TOP),
+            Pair.of(Animation.CHANTING_ONE_HAND_STAFF_RIGHT, Animation.CASTING_ONE_HAND_STAFF_RIGHT)
+    );
+
 
     public static final List<MagicAnimation> magicAnimations = new ArrayList<>();
     // Static block to initialize the list
     static {
-        magicAnimations.add(new MagicAnimation("starfall", null, Animation.CHANTING_TWO_HAND_FRONT, Animation.CHANTING_ONE_HAND, Animation.CASTING_ONE_HAND_BOTTOM, null));
-        magicAnimations.add(new MagicAnimation("ray_of_siphoning", null, Animation.CHANTING_TWO_HAND_FRONT, Animation.CHANTING_ONE_HAND, Animation.CASTING_ONE_HAND_BOTTOM, null));
-        magicAnimations.add(new MagicAnimation("healing_circle", Animation.CHANTING_ONE_HAND, Animation.CASTING_ONE_HAND_BUFF, Animation.CHANTING_ONE_HAND, Animation.CASTING_ONE_HAND_BUFF                                                                ,null));
-        magicAnimations.add(new MagicAnimation("black_hole", Animation.CHANTING_TWO_HAND, Animation.CASTING_TWO_HAND, Animation.CHANTING_STAFF, Animation.CASTING_STAFF,null));
-        magicAnimations.add(new MagicAnimation("firebolt", null, Animation.CASTING_ONE_HAND_INWARD, null, Animation.CASTING_STAFF  ,Animation.CASTING_ONE_HAND_STAFF_LEFT));
+
+    magicAnimations.add(new MagicAnimation("abyssal_shroud", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("acid_orb", CHANTING_TWO_HAND_BACK, CASTING_TWO_HAND_BACK, CHANTING_TWO_HAND_BACK, CASTING_TWO_HAND_BACK));
+    magicAnimations.add(new MagicAnimation("angel_wing", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("ascension", null, CASTING_TWO_HAND_TOP, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("black_hole", CHANTING_TWO_HAND_TOP, CASTING_TWO_HAND_TOP, CHANTING_TWO_HAND_STAFF_TOP, CASTING_ONE_HAND_STAFF_RIGHT));
+    magicAnimations.add(new MagicAnimation("chain_creeper", CHANTING_ONE_HAND_FRONT, CASTING_ONE_HAND_BELOW, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("charge", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("devour", CHANTING_ONE_HAND_FRONT, CASTING_ONE_HAND_BELOW, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("earthquake", CHANTING_TWO_HAND_TOP, CASTING_TWO_HAND_TOP, CHANTING_TWO_HAND_STAFF_TOP, CASTING_TWO_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("echoing_strikes", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("evasion", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("fang_strike", CHANTING_ONE_HAND_FRONT, CASTING_ONE_HAND_BELOW, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("fang_ward", CHANTING_ONE_HAND_FRONT, CASTING_ONE_HAND_BELOW, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("fireball", CHANTING_TWO_HAND_BACK, CASTING_TWO_HAND_BACK, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_RIGHT));
+    magicAnimations.add(new MagicAnimation("fortify", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("gluttony", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("greater_heal", CHANTING_TWO_HAND_TOP, CASTING_TWO_HAND_TOP, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("heal", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("heartstop", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("invisibility", CHANTING_ONE_HAND_TOP, CASTING_ONE_HAND_BUFF, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_TWO_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("magma_bomb", CHANTING_TWO_HAND_BACK, CASTING_TWO_HAND_BACK, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_RIGHT));
+    magicAnimations.add(new MagicAnimation("oakskin", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("planar_sight", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("raise_dead", CHANTING_ONE_HAND_FRONT, CASTING_ONE_HAND_BELOW, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("recall", CHANTING_TWO_HAND_TOP, CASTING_TWO_HAND_TOP, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("sonic_boom", CHANTING_TWO_HAND_BACK, CASTING_TWO_HAND_BACK, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_RIGHT));
+    magicAnimations.add(new MagicAnimation("spider_aspect", null, CASTING_ONE_HAND_BUFF, null, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("summon_ender_chest", CHANTING_ONE_HAND_FRONT, CASTING_ONE_HAND_BELOW, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("summon_horse", CHANTING_ONE_HAND_FRONT, CASTING_ONE_HAND_BELOW, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("summon_polar_bear", CHANTING_ONE_HAND_FRONT, CASTING_ONE_HAND_BELOW, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
+    magicAnimations.add(new MagicAnimation("summon_vex", CHANTING_ONE_HAND_FRONT, CASTING_ONE_HAND_BELOW, CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP));
     }
 
-    // Static method to get chant animation
+    public static Pair<StaticAnimation, StaticAnimation> getRandomFallbackPair() {
+        return fallbackAnimationPairs.get(RANDOM.nextInt(fallbackAnimationPairs.size()));
+    }
+
+    public static Pair<StaticAnimation, StaticAnimation> getRandomStaffFallbackPair() {
+        return fallbackStaffAnimationPairs.get(RANDOM.nextInt(fallbackStaffAnimationPairs.size()));
+    }
+
+    // Method to get both chant and cast animations for a given spell name
+    public static Pair<StaticAnimation, StaticAnimation> getMagicAnimations(String spellName) {
+        for (MagicAnimation magicAnimation : magicAnimations) {
+            if (magicAnimation.spellName.equals(spellName)) {
+                // Use the specific spell animations if available
+                StaticAnimation chantAnim = magicAnimation.chantAnim != null ? magicAnimation.chantAnim : null;
+                StaticAnimation castAnim = magicAnimation.castAnim != null ? magicAnimation.castAnim : null;
+                return Pair.of(chantAnim, castAnim);
+            }
+        }
+
+        // Fallback if specific animations are not defined
+        return getRandomFallbackPair();
+    }
+
+    public static Pair<StaticAnimation, StaticAnimation> getMagicStaffAnimations(String spellName) {
+        for (MagicAnimation magicAnimation : magicAnimations) {
+            if (magicAnimation.spellName.equals(spellName)) {
+                // Use the specific spell animations if available
+                StaticAnimation staffChantAnim = magicAnimation.staffChantAnim != null ? magicAnimation.staffChantAnim : null;
+                StaticAnimation staffCastAnim = magicAnimation.staffCastAnim != null ? magicAnimation.staffCastAnim : null;
+                return Pair.of(staffChantAnim, staffCastAnim);
+            }
+        }
+
+        // Fallback if specific animations are not defined
+        return getRandomStaffFallbackPair();
+    }
+
+
+    /*// Static method to get chant animation
     public static StaticAnimation getChantAnimation(String spellName) {
         if (spellName != null){
         for (MagicAnimation magicAnimation : magicAnimations) {
@@ -63,9 +133,7 @@ public class MagicAnimation {
         return randomCastAnimation();
     }
 
-    public static StaticAnimation randomCastAnimation(){
-        return castAnimations.get(RANDOM.nextInt(castAnimations.size()));
-    }
+
 
     // Static method to get staff chant animation
     public static StaticAnimation getStaffChantAnimation(String spellName) {
@@ -87,14 +155,5 @@ public class MagicAnimation {
             }
         }
         return Animation.CASTING_ONE_HAND_BOTTOM;
-    }
-
-    public static StaticAnimation getStaffCastAnimationAlt(String spellName) {
-        for (MagicAnimation magicAnimation : magicAnimations) {
-            if (magicAnimation.spellName.equals(spellName)) {
-                return magicAnimation.staffCastAnimAlt;
-            }
-        }
-        return Animation.CASTING_ONE_HAND_BOTTOM;
-    }
+    }*/
 }

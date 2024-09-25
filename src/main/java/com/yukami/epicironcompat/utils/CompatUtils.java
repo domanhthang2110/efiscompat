@@ -18,16 +18,16 @@ public class CompatUtils {
         return false;
     }
 
-    public static boolean isHoldingStaffOffHand (LivingEntity player){
+    /*public static boolean isHoldingStaffOffHand (LivingEntity player){
         List<? extends String> stringList = CommonConfig.staffWeaponList.get();
         if(player instanceof Player) {
             return (stringList.contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(player.getOffhandItem().getItem())).toString()));
         }
         return false;
-    }
+    }*/
 
     public static boolean isHoldingStaff (LivingEntity player){
 
-        return (isHoldingStaffMainHand(player) || isHoldingStaffOffHand(player));
+        return (isHoldingStaffMainHand(player));
     }
 }

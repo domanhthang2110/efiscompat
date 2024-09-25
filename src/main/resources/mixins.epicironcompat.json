@@ -8,7 +8,7 @@
   },
   "client": [
     "MixinBasicAttack",
-    "MixinHideItem"
+    "MixinRenderItemBase"
   ],
   "mixins": [
     "MixinCancelAnimation"

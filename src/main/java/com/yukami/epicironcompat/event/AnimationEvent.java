@@ -24,10 +24,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jline.utils.Log;
+import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.AnimationProvider;
+import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;
+import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.client.animation.ClientAnimator;
+import yesman.epicfight.api.client.animation.Layer;
+import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -48,48 +53,28 @@ import static com.yukami.epicironcompat.utils.CompatUtils.*;
 
 public class AnimationEvent {
 
-    private static final List<Pair<CastType, AnimationProvider<?>>> defaultChants = Lists.newArrayList(
-            Pair.of(CastType.CONTINUOUS, () -> null),
-            Pair.of(CastType.INSTANT, () -> null),
-            Pair.of(CastType.LONG, () -> Animation.CHANTING_ONE_HAND),
-            Pair.of(CastType.NONE, () -> Animation.CHANTING_ONE_HAND)
-    );
+    private static StaticAnimation nextAnim;
 
-    private static final List<Pair<CastType, AnimationProvider<?>>> defaultCasts = Lists.newArrayList(
-            Pair.of(CastType.CONTINUOUS, () -> Animation.CHANTING_TWO_HAND_FRONT),
-            Pair.of(CastType.INSTANT, () -> Animation.CASTING_ONE_HAND_TOP),
-            Pair.of(CastType.LONG, () -> Animation.CASTING_ONE_HAND_TOP)
-    );
-
-    private static final List<Pair<CastType, AnimationProvider<?>>> staffChants = Lists.newArrayList(
-            Pair.of(CastType.CONTINUOUS, () -> null),
-            Pair.of(CastType.INSTANT, () -> Animation.CHANTING_TWO_HAND),
-            Pair.of(CastType.LONG, () -> Animation.CHANTING_TWO_HAND),
-            Pair.of(CastType.NONE, () -> Animation.CHANTING_TWO_HAND)
-    );
-    private static final List<Pair<CastType, AnimationProvider<?>>> staffCasts = Lists.newArrayList(
-            Pair.of(CastType.CONTINUOUS, () -> Animation.CHANTING_TWO_HAND_FRONT),
-            Pair.of(CastType.INSTANT, () -> Animation.CHANTING_TWO_HAND_FRONT),
-            Pair.of(CastType.LONG, () -> Animation.CHANTING_TWO_HAND_FRONT),
-            Pair.of(CastType.NONE, () -> Animation.CHANTING_TWO_HAND_FRONT)
-    );
-
-    private static StaticAnimation searchChants(Player player, CastType castType, String spellID)
+    private static StaticAnimation searchAnimations(Player player, CastType castType, String spellID)
     {
-        StaticAnimation chantingAnims;
+        StaticAnimation chantingAnims = null;
         AbstractSpell spell = SpellRegistry.getSpell(spellID);
         if (isHoldingStaff(player))
         {
-            chantingAnims = MagicAnimation.getStaffChantAnimation(spell.getSpellName());
+            Pair<StaticAnimation, StaticAnimation> animPair = MagicAnimation.getMagicStaffAnimations(spell.getSpellName());
+            chantingAnims = animPair.getFirst();
+            nextAnim = animPair.getSecond();
         }
         else
         {
-            chantingAnims = MagicAnimation.getChantAnimation(spell.getSpellName());
+            Pair<StaticAnimation, StaticAnimation> animPair = MagicAnimation.getMagicAnimations(spell.getSpellName());
+            chantingAnims = animPair.getFirst();
+            nextAnim = animPair.getSecond();
         }
         return chantingAnims;
     }
 
-    private static StaticAnimation searchCasts(Player player, CastType castType, String spellID)
+    /*private static StaticAnimation searchCasts(Player player, CastType castType, String spellID)
     {
         StaticAnimation castingAnims;
         AbstractSpell spell = SpellRegistry.getSpell(spellID);
@@ -99,11 +84,10 @@ public class AnimationEvent {
                 castingAnims = MagicAnimation.getCastAnimation(spell.getSpellName());
         } else if (isHoldingStaffMainHand(player)) {
             castingAnims = MagicAnimation.getStaffCastAnimation(spell.getSpellName());
-        } else if(isHoldingStaffOffHand(player)){
-            castingAnims = MagicAnimation.getStaffCastAnimationAlt(spell.getSpellName()); // Default in else block
+
         } else {castingAnims = MagicAnimation.getCastAnimation(spell.getSpellName());}
         return castingAnims;
-    }
+    }*/
 
     @SubscribeEvent
     public static void beforeSpellCast(SpellPreCastEvent event) {
@@ -114,13 +98,10 @@ public class AnimationEvent {
         var spell = SpellRegistry.getSpell(sid);
         CastType castType = spell.getCastType();
         if (player instanceof ServerPlayer) {
-
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
-            if (castType != CastType.INSTANT) {
-                chantingAnimation = searchChants(player, castType, sid);
-                LogUtils.getLogger().info("Chant anim: {}", chantingAnimation);
-            }
-            if (chantingAnimation != null) {
+            chantingAnimation = searchAnimations(player, castType, sid);
+            LogUtils.getLogger().info("Spell name: {}", spell.getSpellName());
+            if (chantingAnimation != null && castType == CastType.LONG) {
                 playerpatch.playAnimationSynchronized(chantingAnimation, 0F);
             }
         }
@@ -135,12 +116,14 @@ public class AnimationEvent {
         CastType castType = ClientMagicData.getCastType();
         if (player instanceof ServerPlayer && castType != null) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
-            castAnimation = searchCasts(player, castType, sid);
-            LogUtils.getLogger().info("Check off hand: {}", playerpatch.getCurrentLivingMotion());
-            LogUtils.getLogger().info("Weapon cate: {}", playerpatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getStyle(playerpatch));
-            ;
+            //castAnimation = searchCasts(player, castType, sid);
+            if (castType == CastType.CONTINUOUS){
+                castAnimation = Animation.CONTINUOUS_TWO_HAND_FRONT;
+            }
+            else castAnimation = nextAnim;
             if (castAnimation != null) {
                 playerpatch.playAnimationSynchronized(castAnimation, 0);
+                nextAnim = null;
             }
         }
     }
