@@ -113,7 +113,8 @@ public class AnimationEvent {
         StaticAnimation castAnimation;
         ServerPlayerPatch playerpatch;
         String sid = event.getSpellId();
-        CastType castType = ClientMagicData.getCastType();
+        AbstractSpell spell = SpellRegistry.getSpell(sid);
+        CastType castType = spell.getCastType();
         if (player instanceof ServerPlayer && castType != null) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
             //castAnimation = searchCasts(player, castType, sid);
