@@ -24,10 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jline.utils.Log;
-import yesman.epicfight.api.animation.AnimationPlayer;
-import yesman.epicfight.api.animation.AnimationProvider;
-import yesman.epicfight.api.animation.Animator;
-import yesman.epicfight.api.animation.LivingMotions;
+import yesman.epicfight.api.animation.*;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.client.animation.ClientAnimator;
@@ -95,13 +92,14 @@ public class AnimationEvent {
         StaticAnimation chantingAnimation = null;
         ServerPlayerPatch playerpatch;
         String sid = event.getSpellId();
-        var spell = SpellRegistry.getSpell(sid);
+        AbstractSpell spell = SpellRegistry.getSpell(sid);
         CastType castType = spell.getCastType();
         if (player instanceof ServerPlayer) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
             chantingAnimation = searchAnimations(player, castType, sid);
-            LogUtils.getLogger().info("Spell name: {}", spell.getSpellName());
-            if (chantingAnimation != null && castType == CastType.LONG) {
+            if(playerpatch.isChargingSkill() || playerpatch.isStunned() || playerpatch.getTickSinceLastAction() <= (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay.get())) {
+                event.setCanceled(true);}
+            if (chantingAnimation != null && castType == CastType.LONG && playerpatch.getTickSinceLastAction() > (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay.get())) {
                 playerpatch.playAnimationSynchronized(chantingAnimation, 0F);
             }
         }

@@ -16,6 +16,7 @@ public class CommonConfig {
     // Define a boolean for enabling/disabling two-handed animation item hiding
     public static ForgeConfigSpec.ConfigValue<Boolean> hideTwoHandedItems;
     public static ForgeConfigSpec.ConfigValue<Boolean> hideOffHandItems;
+    public static ForgeConfigSpec.ConfigValue<Double> castingDelay;
 
     static {
         BUILDER.push("General Settings");
@@ -32,6 +33,9 @@ public class CommonConfig {
 
         hideOffHandItems = BUILDER.comment("Enable or disable hiding item in the off-hand while staff animation is playing")
                 .define("hideOffHandItems", true); // Default value is true
+
+        castingDelay = BUILDER.comment("How long the cooldown for casting spell should be after attacking/guarding? 0 is no cooldown and 1 is maximum cooldown based on your main weapon speed. For example sword has the attack speed of 16 ticks, so a default value of 0.5 will make the cooldown 8 ticks (1 second is 20 ticks, also please write 0 as 0.0)")
+                .define("castingDelay", 0.0); // Default value is true
 
         BUILDER.pop();
         CONFIG = BUILDER.build();
