@@ -24,7 +24,7 @@ public class CommonConfig {
         // Define a list of strings with no default values (an empty list)
         staffWeaponList = BUILDER.comment("Add the name of the weapon you wanted to have staff casting animation here with the format mod_id:weapon_name")
                 .defineList("staffWeapon",
-                        Arrays.asList("irons_spellbooks:blood_staff", "irons_spellbooks:ice_staff", "irons_spellbooks:graybeard_staff", "irons_spellbooks:artificer_cane", "irons_spellbooks:lighting_rod", "irons_spellbooks:magehunter", "irons_spellbooks:keeper_flamberge", "irons_spellbooks:spellbreaker", "irons_spellbooks:amethyst_rapier", "irons_spellbooks:hither_thither_wand"),  // Default weapons
+                        Arrays.asList("irons_spellbooks:blood_staff", "irons_spellbooks:ice_staff", "irons_spellbooks:graybeard_staff", "irons_spellbooks:artificer_cane", "irons_spellbooks:lightning_rod", "irons_spellbooks:magehunter", "irons_spellbooks:keeper_flamberge", "irons_spellbooks:spellbreaker", "irons_spellbooks:amethyst_rapier", "irons_spellbooks:hither_thither_wand"),  // Default weapons
                         obj -> obj instanceof String);
 
         // Define the boolean config value for hiding two-handed items
