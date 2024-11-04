@@ -173,15 +173,15 @@ dependencies {
 
     // Apply Mixin AP
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation fg.deobf("curse.maven:epic-fight-mod-405076:5655318")
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:5856683")
     implementation fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${irons_spells_version}")
     runtimeOnly fg.deobf("curse.maven:travelers-backpack-321117:5529995")
     runtimeOnly fg.deobf("curse.maven:geckolib-388172:5675221")
-    runtimeOnly fg.deobf("curse.maven:sophisticated-backpacks-422301:5756839")
-    runtimeOnly fg.deobf("curse.maven:curios-309927:5680164")
-    runtimeOnly fg.deobf("curse.maven:sophisticated-core-618298:5755388")
     runtimeOnly fg.deobf("curse.maven:weapons-of-miracles-epicfight-918614:5647351")
     runtimeOnly fg.deobf("curse.maven:elytra-slot-317716:5583756")
+    runtimeOnly fg.deobf("curse.maven:curios-309927:5680164")
+    //runtimeOnly fg.deobf("curse.maven:samurai-dynasty-848381:5672395")
+    //runtimeOnly fg.deobf("curse.maven:azurelib-817423:5782756")
 
     // CAELUS *****************************************************************************************************
     runtimeOnly fg.deobf("curse.maven:caelus-308989:5281700")

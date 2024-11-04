@@ -19,6 +19,5 @@ public class EpicFightIronCompat
         net.minecraftforge.fml.ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.CONFIG, "efiscompat.toml");
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(Animation::registerAnimations);
-
     }
 }

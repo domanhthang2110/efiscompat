@@ -1,14 +1,12 @@
 package com.yukami.epicironcompat.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.logging.LogUtils;
 import com.yukami.epicironcompat.config.CommonConfig;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.spongepowered.asm.mixin.Mixin;
@@ -54,9 +52,7 @@ public class MixinRenderItemBase {
             Layer layer = animator.getCompositeLayer(Layer.Priority.HIGHEST);
             AnimationPlayer animationPlayer = layer.animationPlayer; // Get the animator
             DynamicAnimation anim = animationPlayer.getAnimation();
-            if (anim.toString().contains("two_hand") && CommonConfig.hideTwoHandedItems.get()) {
-                return true;
-            }
+            return anim.toString().contains("two_hand") && CommonConfig.hideTwoHandedItems.get();
         }
         return false;
     }
