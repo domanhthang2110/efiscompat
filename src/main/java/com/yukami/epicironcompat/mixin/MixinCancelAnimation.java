@@ -23,6 +23,6 @@ public abstract class MixinCancelAnimation
 		if (serverPlayer != null){
 		ServerPlayerPatch playerpatch = EpicFightCapabilities.getEntityPatch(serverPlayer, ServerPlayerPatch.class);
 		LogUtils.getLogger().info("Use item: {}", serverPlayer.getUseItem());
-		if(playerpatch != null) playerpatch.playAnimationSynchronized(Animations.OFF_ANIMATION_HIGHEST, 0);}
+		if(playerpatch != null) playerpatch.modifyLivingMotionByCurrentItem(false);}
 	}
 }
