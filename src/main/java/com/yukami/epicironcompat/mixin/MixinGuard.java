@@ -1,26 +1,34 @@
 package com.yukami.epicironcompat.mixin;
 
-import ca.weblite.objc.Client;
 import com.mojang.logging.LogUtils;
+import com.yukami.epicironcompat.config.CommonConfig;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayer;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.skill.BasicAttack;
 import yesman.epicfight.skill.guard.GuardSkill;
+import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
-
 
 @Mixin(value = GuardSkill.class, remap = false)
 public class MixinGuard {
-    @Inject(method = "isExecutableState", at = @At("HEAD"), cancellable = true)
-    private void onIsExecutableState(PlayerPatch<?> playerPatch, CallbackInfoReturnable<Boolean> cir) {
-            // Assuming there's a method or flag that checks if the player is casting a spell
-            if (ClientMagicData.isCasting()) {  // Replace with actual method to check spell-casting state
-                cir.setReturnValue(false);
+
+    @Inject(method = "isExecutableState", at = @At("RETURN"))
+    public void onIsExecutableState(PlayerPatch<?> executer, CallbackInfoReturnable<Boolean> info) {
+        // Check if the method returned true
+        if (info.getReturnValue()) {
+            if (!executer.isLogicalClient()) {
+                ServerPlayer player = (ServerPlayer) executer.getOriginal();
+                if (MagicData.getPlayerMagicData(player).isCasting()) {
+                    Utils.serverSideCancelCast(player, CommonConfig.castCancelCooldown.get());
+                }
             }
+        }
     }
 }
+
