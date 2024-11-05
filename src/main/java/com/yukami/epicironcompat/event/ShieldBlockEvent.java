@@ -18,10 +18,12 @@ public class ShieldBlockEvent {
     public static void customUseItemEvent(PlayerInteractEvent.RightClickItem event) {
         // Your custom logic goes here
         var entity = event.getEntity();
-        var magicData = MagicData.getPlayerMagicData(entity);
-        if (magicData.isCasting() && (event.getItemStack().getItem() instanceof ShieldItem)) {
-            event.setCanceled(false);
-            Utils.serverSideCancelCast((ServerPlayer) entity, CommonConfig.castCancelCooldown.get());
+        if (entity instanceof ServerPlayer) {
+            var magicData = MagicData.getPlayerMagicData(entity);
+            if (magicData.isCasting() && (event.getItemStack().getItem() instanceof ShieldItem)) {
+                event.setCanceled(false);
+                Utils.serverSideCancelCast((ServerPlayer) entity, CommonConfig.castCancelCooldown.get());
+            }
         }
     }
 }
