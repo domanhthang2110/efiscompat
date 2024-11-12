@@ -3,6 +3,7 @@ package com.yukami.epicironcompat.mixin;
 import com.mojang.logging.LogUtils;
 import com.yukami.epicironcompat.config.CommonConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,8 +25,9 @@ public class MixinGuard {
         if (info.getReturnValue()) {
             if (!executer.isLogicalClient()) {
                 ServerPlayer player = (ServerPlayer) executer.getOriginal();
-                if (MagicData.getPlayerMagicData(player).isCasting()) {
-                    Utils.serverSideCancelCast(player, CommonConfig.castCancelCooldown.get());
+                MagicData magicData = MagicData.getPlayerMagicData(player);
+                if (magicData.isCasting()) {
+                    Utils.serverSideCancelCast(player, CommonConfig.castCancelCooldown.get() || magicData.getCastType() == CastType.CONTINUOUS);
                 }
             }
         }

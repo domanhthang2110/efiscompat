@@ -180,6 +180,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:weapons-of-miracles-epicfight-918614:5647351")
     runtimeOnly fg.deobf("curse.maven:elytra-slot-317716:5583756")
     runtimeOnly fg.deobf("curse.maven:curios-309927:5680164")
+    runtimeOnly fg.deobf("curse.maven:embeddium-908741:5681725")
     //runtimeOnly fg.deobf("curse.maven:samurai-dynasty-848381:5672395")
     //runtimeOnly fg.deobf("curse.maven:azurelib-817423:5782756")
 

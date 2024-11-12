@@ -1,7 +1,9 @@
 package com.yukami.epicironcompat.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.logging.LogUtils;
 import com.yukami.epicironcompat.config.CommonConfig;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -25,7 +27,7 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.model.armature.HumanoidArmature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 
-import static com.yukami.epicironcompat.utils.CompatUtils.isHoldingStaff;
+import static com.yukami.epicironcompat.utils.CompatUtils.*;
 
 @Mixin(RenderItemBase.class)
 public class MixinRenderItemBase {
@@ -33,21 +35,18 @@ public class MixinRenderItemBase {
     @Inject(method = "renderItemInHand",
             at = @At("HEAD"), cancellable = true, remap = false)
     private void onRenderItemInHandStart(ItemStack stack, LivingEntityPatch<?> entitypatch, InteractionHand hand, HumanoidArmature armature, OpenMatrix4f[] poses, MultiBufferSource buffer, PoseStack poseStack, int packedLight, float partialTicks, CallbackInfo ci) {
-        // Code to execute before the original renderItemInHand method
         LivingEntity originalEntity = entitypatch.getOriginal();
         if (originalEntity instanceof LocalPlayer player) {
             if (ClientMagicData.isCasting()){
-                if ((isHoldingStaff(player) && hand == InteractionHand.OFF_HAND && CommonConfig.hideOffHandItems.get()) || efiscompat$isTwoHandedAnim())
-                    ci.cancel();
+                if ((!isHoldingStaffOffHand(player) && CommonConfig.hideOffHandItems.get() && hand == InteractionHand.OFF_HAND) || (efiscompat$isTwoHandedAnim(player) && !isHoldingStaffMainHand(player))) ci.cancel();
             }
         }
     }
 
     @Unique
-    private static Boolean efiscompat$isTwoHandedAnim() {
-        LocalPlayer localPlayer = Minecraft.getInstance().player;
+    private static Boolean efiscompat$isTwoHandedAnim(LocalPlayer localPlayer) {
         if (localPlayer != null) {
-            LocalPlayerPatch playerPatch = EpicFightCapabilities.getEntityPatch(localPlayer, LocalPlayerPatch.class); // Cast to your patch
+            LocalPlayerPatch playerPatch = EpicFightCapabilities.getEntityPatch(localPlayer, LocalPlayerPatch.class);
             ClientAnimator animator = playerPatch.getClientAnimator();
             Layer layer = animator.getCompositeLayer(Layer.Priority.HIGHEST);
             AnimationPlayer animationPlayer = layer.animationPlayer; // Get the animator

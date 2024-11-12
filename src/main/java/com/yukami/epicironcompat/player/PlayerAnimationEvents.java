@@ -1,25 +1,23 @@
-package com.yukami.epicironcompat.event;
+package com.yukami.epicironcompat.player;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.logging.LogUtils;
 import com.yukami.epicironcompat.animation.Animation;
 import com.yukami.epicironcompat.animation.MagicAnimation;
 import com.yukami.epicironcompat.config.CommonConfig;
+import com.yukami.epicironcompat.utils.CompatUtils;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
 import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.data.reloader.SkillManager;
-import yesman.epicfight.skill.Skill;
-import yesman.epicfight.skill.SkillCategories;
+import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
+import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
@@ -29,7 +27,7 @@ import static com.yukami.epicironcompat.utils.CompatUtils.*;
         modid = "efiscompat"
 )
 
-public class AnimationEvent {
+public class PlayerAnimationEvents {
 
     private static StaticAnimation nextAnim;
 
@@ -37,9 +35,14 @@ public class AnimationEvent {
     {
         StaticAnimation chantingAnims = null;
         AbstractSpell spell = SpellRegistry.getSpell(spellID);
-        if (isHoldingStaff(player))
+        if (isHoldingStaffMainHand(player))
         {
             Pair<StaticAnimation, StaticAnimation> animPair = MagicAnimation.getMagicStaffAnimations(spell.getSpellName());
+            chantingAnims = animPair.getFirst();
+            nextAnim = animPair.getSecond();
+        }
+        else if (isHoldingStaffOffHand(player) && !isHoldingStaffMainHand(player)){
+            Pair<StaticAnimation, StaticAnimation> animPair = MagicAnimation.getRandomStaffLeftFallbackPair();
             chantingAnims = animPair.getFirst();
             nextAnim = animPair.getSecond();
         }

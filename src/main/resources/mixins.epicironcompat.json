@@ -12,6 +12,7 @@
   "mixins": [
     "MixinCancelAnimation",
     "MixinDodge",
-    "MixinGuard"
+    "MixinGuard",
+    "MixinOnSpellFinish"
   ]
 }

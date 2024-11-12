@@ -2,6 +2,7 @@ package com.yukami.epicironcompat.mixin;
 
 import com.yukami.epicironcompat.config.CommonConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,8 +22,9 @@ public class MixinDodge {
         if (info.getReturnValue()) {
             if (!executer.isLogicalClient()) {
                 ServerPlayer player = (ServerPlayer) executer.getOriginal();
-                if (MagicData.getPlayerMagicData(player).isCasting() && CommonConfig.enableDodgeCancelling.get()) {
-                    Utils.serverSideCancelCast(player, CommonConfig.castCancelCooldown.get());
+                MagicData magicData = MagicData.getPlayerMagicData(player);
+                if (magicData.isCasting() && CommonConfig.enableDodgeCancelling.get()) {
+                    Utils.serverSideCancelCast(player, CommonConfig.castCancelCooldown.get() || magicData.getCastType() == CastType.CONTINUOUS);
                 }
             }
         }
