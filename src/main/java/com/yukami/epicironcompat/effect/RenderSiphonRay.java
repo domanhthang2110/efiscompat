@@ -3,6 +3,9 @@ package com.yukami.epicironcompat.effect;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.logging.LogUtils;
 import com.yukami.epicironcompat.EpicFightIronCompat;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
@@ -30,9 +33,11 @@ public class RenderSiphonRay {
         assert livingEntity != null;
         float pitch = livingEntity.getXRot();
         SyncedSpellData syncedSpellData = ClientMagicData.getSyncedSpellData(livingEntity);
-        poseStack.translate(0,-1.5f,0);
-            if (syncedData.isCasting()) {
+            if (syncedData.isCasting() && ((AbstractSpell) SpellRegistry.RAY_OF_SIPHONING_SPELL.get()).getSpellId().equals(syncedSpellData.getCastingSpellId())) {
+                poseStack.pushPose();
+                poseStack.translate(0, -1.5f, 0);
                 SpellRenderingHelper.renderSpellHelper(syncedSpellData, livingEntity, poseStack, buffer, event.getPartialTick());
+                poseStack.popPose();
             }
         }
         @SubscribeEvent

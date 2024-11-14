@@ -30,8 +30,8 @@ public class MagicAnimation {
             Pair.of(CHANTING_ONE_HAND_FRONT, CASTING_ONE_HAND_INWARD));
 
     private static final List<Pair<StaticAnimation, StaticAnimation>> fallbackStaffAnimationPairs = List.of(
-            Pair.of(CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP_LEFT),
-            Pair.of(CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_FRONT_LEFT));
+            Pair.of(CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_TOP_RIGHT),
+            Pair.of(CHANTING_ONE_HAND_STAFF_RIGHT, CASTING_ONE_HAND_STAFF_FRONT_RIGHT));
     private static final List<Pair<StaticAnimation, StaticAnimation>> fallbackStaffLeftAnimationPairs = List.of(
             Pair.of(CHANTING_ONE_HAND_STAFF_LEFT, CASTING_ONE_HAND_STAFF_TOP_LEFT),
             Pair.of(CHANTING_ONE_HAND_STAFF_LEFT, CASTING_ONE_HAND_STAFF_FRONT_LEFT));

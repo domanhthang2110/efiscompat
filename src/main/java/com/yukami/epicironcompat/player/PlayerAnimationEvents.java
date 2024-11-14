@@ -1,6 +1,7 @@
 package com.yukami.epicironcompat.player;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.logging.LogUtils;
 import com.yukami.epicironcompat.animation.Animation;
 import com.yukami.epicironcompat.animation.MagicAnimation;
 import com.yukami.epicironcompat.config.CommonConfig;
@@ -10,11 +11,13 @@ import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.item.weapons.StaffItem;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jline.utils.Log;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.gameasset.Animations;
@@ -33,7 +36,7 @@ public class PlayerAnimationEvents {
 
     private static StaticAnimation searchAnimations(Player player, CastType castType, String spellID)
     {
-        StaticAnimation chantingAnims = null;
+        StaticAnimation chantingAnims;
         AbstractSpell spell = SpellRegistry.getSpell(spellID);
         if (isHoldingStaffMainHand(player))
         {
