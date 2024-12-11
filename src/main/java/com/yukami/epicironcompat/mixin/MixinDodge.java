@@ -23,8 +23,8 @@ public class MixinDodge {
             if (!executer.isLogicalClient()) {
                 ServerPlayer player = (ServerPlayer) executer.getOriginal();
                 MagicData magicData = MagicData.getPlayerMagicData(player);
-                if (magicData.isCasting() && CommonConfig.enableDodgeCancelling.get()) {
-                    Utils.serverSideCancelCast(player, CommonConfig.castCancelCooldown.get() || magicData.getCastType() == CastType.CONTINUOUS);
+                if (magicData.isCasting() && CommonConfig.enableDodgeCancelling) {
+                    Utils.serverSideCancelCast(player, CommonConfig.castCancelCooldown || magicData.getCastType() == CastType.CONTINUOUS);
                 }
             }
         }

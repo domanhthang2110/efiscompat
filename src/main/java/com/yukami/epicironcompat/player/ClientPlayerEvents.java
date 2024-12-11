@@ -29,7 +29,7 @@ public class ClientPlayerEvents {
             var magicData = MagicData.getPlayerMagicData(entity);
             if (magicData.isCasting()) {
                 event.setCanceled(false);
-                Utils.serverSideCancelCast((ServerPlayer) entity, CommonConfig.castCancelCooldown.get() || magicData.getCastType() == CastType.CONTINUOUS);
+                Utils.serverSideCancelCast((ServerPlayer) entity, CommonConfig.castCancelCooldown || magicData.getCastType() == CastType.CONTINUOUS);
             }
         }
     }

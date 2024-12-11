@@ -27,7 +27,7 @@ public class MixinGuard {
                 ServerPlayer player = (ServerPlayer) executer.getOriginal();
                 MagicData magicData = MagicData.getPlayerMagicData(player);
                 if (magicData.isCasting()) {
-                    Utils.serverSideCancelCast(player, CommonConfig.castCancelCooldown.get() || magicData.getCastType() == CastType.CONTINUOUS);
+                    Utils.serverSideCancelCast(player, CommonConfig.castCancelCooldown || magicData.getCastType() == CastType.CONTINUOUS);
                 }
             }
         }

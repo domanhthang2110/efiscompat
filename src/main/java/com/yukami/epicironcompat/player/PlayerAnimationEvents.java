@@ -84,9 +84,9 @@ public class PlayerAnimationEvents {
         if (player instanceof ServerPlayer) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
             chantingAnimation = searchAnimations(player, castType, sid);
-            if(playerpatch.isChargingSkill() || playerpatch.isStunned() || playerpatch.getTickSinceLastAction() <= (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay.get())) {
+            if(playerpatch.isChargingSkill() || playerpatch.isStunned() || playerpatch.getTickSinceLastAction() <= (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay)) {
                 event.setCanceled(true);}
-            if (chantingAnimation != null && castType == CastType.LONG && playerpatch.getTickSinceLastAction() > (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay.get())) {
+            if (chantingAnimation != null && castType == CastType.LONG && playerpatch.getTickSinceLastAction() > (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay)) {
                 playerpatch.playAnimationSynchronized(chantingAnimation, 0F);
             }
         }

@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class CompatUtils {
     public static boolean isHoldingStaffMainHand (LivingEntity player){
-        List<? extends String> stringList = CommonConfig.staffWeaponList.get();
+        List<? extends String> stringList = CommonConfig.staffWeaponList;
         if(player instanceof Player){
             return (player.getMainHandItem().getItem() instanceof StaffItem || stringList.contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(player.getMainHandItem().getItem())).toString()));
         }
@@ -19,7 +19,7 @@ public class CompatUtils {
     }
 
     public static boolean isHoldingStaffOffHand (LivingEntity player){
-        List<? extends String> stringList = CommonConfig.staffWeaponList.get();
+        List<? extends String> stringList = CommonConfig.staffWeaponList;
         if(player instanceof Player) {
             return (player.getOffhandItem().getItem() instanceof StaffItem || stringList.contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(player.getOffhandItem().getItem())).toString()));
         }

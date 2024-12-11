@@ -38,7 +38,7 @@ public class MixinRenderItemBase {
         LivingEntity originalEntity = entitypatch.getOriginal();
         if (originalEntity instanceof LocalPlayer player) {
             if (ClientMagicData.isCasting()){
-                if ((!isHoldingStaffOffHand(player) && CommonConfig.hideOffHandItems.get() && hand == InteractionHand.OFF_HAND) || (efiscompat$isTwoHandedAnim(player) && !isHoldingStaffMainHand(player))) ci.cancel();
+                if ((!isHoldingStaffOffHand(player) && CommonConfig.hideOffHandItems && hand == InteractionHand.OFF_HAND) || (efiscompat$isTwoHandedAnim(player) && !isHoldingStaffMainHand(player))) ci.cancel();
             }
         }
     }
@@ -51,7 +51,7 @@ public class MixinRenderItemBase {
             Layer layer = animator.getCompositeLayer(Layer.Priority.HIGHEST);
             AnimationPlayer animationPlayer = layer.animationPlayer; // Get the animator
             DynamicAnimation anim = animationPlayer.getAnimation();
-            return anim.toString().contains("two_hand") && CommonConfig.hideTwoHandedItems.get();
+            return anim.toString().contains("two_hand") && CommonConfig.hideTwoHandedItems;
         }
         return false;
     }
