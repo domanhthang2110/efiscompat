@@ -173,7 +173,7 @@ dependencies {
 
     // Apply Mixin AP
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation fg.deobf("curse.maven:epic-fight-mod-405076:5856683")
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:5922122")
     implementation fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${irons_spells_version}")
     runtimeOnly fg.deobf("curse.maven:travelers-backpack-321117:5529995")
     runtimeOnly fg.deobf("curse.maven:geckolib-388172:5675221")

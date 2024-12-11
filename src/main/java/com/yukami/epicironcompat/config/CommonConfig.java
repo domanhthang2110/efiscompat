@@ -1,12 +1,16 @@
 package com.yukami.epicironcompat.config;
 
+import com.mojang.logging.LogUtils;
+import com.yukami.epicironcompat.EpicFightIronCompat;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+@Mod.EventBusSubscriber(modid = EpicFightIronCompat.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec CONFIG;
@@ -21,13 +25,7 @@ public class CommonConfig {
     public static ForgeConfigSpec.ConfigValue<Boolean> ENABLE_DODGE_CANCELLING;
     public static ForgeConfigSpec.ConfigValue<Double> CASTING_DELAY;
 
-    // Cached config values
-    public static List<? extends String> staffWeaponList;
-    public static boolean hideTwoHandedItems;
-    public static boolean hideOffHandItems;
-    public static boolean castCancelCooldown;
-    public static boolean enableDodgeCancelling;
-    public static double castingDelay;
+
 
     static {
         BUILDER.push("General Settings");
@@ -57,13 +55,21 @@ public class CommonConfig {
         BUILDER.pop();
         CONFIG = BUILDER.build();
     }
-
+    // Cached config values
+    public static List<? extends String> staffWeaponList;
+    public static boolean hideTwoHandedItems;
+    public static boolean hideOffHandItems;
+    public static boolean castCancelCooldown;
+    public static boolean enableDodgeCancelling;
+    public static double castingDelay;
     // The onLoad method that is called when the config is loaded
     @SubscribeEvent
-    static void onLoad(final ModConfigEvent event) {
+    static void onLoad(final ModConfigEvent event)
+    {
         if (event.getConfig().getSpec() == CONFIG) {
             // Cache all config values here
-            staffWeaponList = STAFF_WEAPON_LIST.get();
+            staffWeaponList = new ArrayList<>(STAFF_WEAPON_LIST.get());
+            LogUtils.getLogger().info("Config loaded! {}", staffWeaponList);
             hideTwoHandedItems = HIDE_TWO_HANDED_ITEMS.get();
             hideOffHandItems = HIDE_OFF_HAND_ITEMS.get();
             castingDelay = CASTING_DELAY.get();
