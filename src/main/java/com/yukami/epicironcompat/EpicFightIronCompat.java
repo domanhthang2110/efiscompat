@@ -13,9 +13,16 @@ public class EpicFightIronCompat
 {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "efiscompat";
-    public EpicFightIronCompat(FMLJavaModLoadingContext context)
+    public EpicFightIronCompat()
     {
+        // Retrieve the mod loading context
+        FMLJavaModLoadingContext context = FMLJavaModLoadingContext.get();
+
+        // Register the configuration file
+        context.getModEventBus().register(this);
         context.registerConfig(ModConfig.Type.COMMON, CommonConfig.CONFIG, "efiscompat.toml");
+
+        // Get the event bus and add event listeners
         IEventBus bus = context.getModEventBus();
         bus.addListener(Animation::registerAnimations);
     }
