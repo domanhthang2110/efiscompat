@@ -1,12 +1,20 @@
 package com.yukami.epicironcompat.animation;
 
-import yesman.epicfight.api.animation.types.EntityState;
+import com.mojang.logging.LogUtils;
+import net.minecraft.resources.ResourceLocation;
+import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.forgeevent.AnimationRegistryEvent;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.model.armature.HumanoidArmature;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class Animation {
+    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
+
     public static StaticAnimation CHANTING_ONE_HAND_STAFF_LEFT;
     public static StaticAnimation CASTING_ONE_HAND_TOP;
     public static StaticAnimation CASTING_ONE_HAND_BELOW;
@@ -27,12 +35,13 @@ public class Animation {
     public static StaticAnimation CHANTING_TWO_HAND_STAFF_TOP;
     public static StaticAnimation CONTINUOUS_TWO_HAND_FRONT;
 
-    public static void registerAnimations(AnimationRegistryEvent event) {
+    public static void registerAnimations(AnimationRegistryEvent event){
         event.getRegistryMap().put("efiscompat", Animation::Build);
     }
 
     protected static void Build(){
         HumanoidArmature biped = Armatures.BIPED;
+
         //One-handed chanting
         CHANTING_ONE_HAND_TOP = new StaticAnimation(true, "biped/living/chanting_one_hand_top", biped);
         CHANTING_ONE_HAND_FRONT = new StaticAnimation(true, "biped/living/chanting_one_hand_front", biped);
@@ -57,5 +66,19 @@ public class Animation {
         CASTING_TWO_HAND_STAFF_TOP = new StaticAnimation(false, "biped/living/casting_two_hand_staff_top", biped);
         //Continuous
         CONTINUOUS_TWO_HAND_FRONT = new StaticAnimation(false, "biped/living/continuous_two_hand_front", biped);
+    }
+
+    public static StaticAnimation getByName(String name) {
+        if (name == null || name.isEmpty()) return null;
+
+        LOGGER.info("[epicirontest] Looking up animation: '{}'", name);
+        try {
+            StaticAnimation anim = (StaticAnimation) Animation.class.getField(name).get(null);
+            LOGGER.info("[epicirontest] Found animation: {}", anim != null ? "yes" : "no");
+            return anim;
+        } catch (Exception e) {
+            LOGGER.error("[epicirontest] Failed to get animation '{}': {}", name, e.getMessage());
+            return null;
+        }
     }
 }
