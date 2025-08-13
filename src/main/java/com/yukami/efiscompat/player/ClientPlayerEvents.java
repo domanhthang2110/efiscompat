@@ -1,6 +1,5 @@
 package com.yukami.epicironcompat.player;
 
-import com.mojang.logging.LogUtils;
 import com.yukami.epicironcompat.EpicFightIronCompat;
 import com.yukami.epicironcompat.config.CommonConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -10,8 +9,6 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
-import net.minecraft.client.CameraType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;

@@ -15,22 +15,11 @@ import com.yukami.epicironcompat.animation.Animation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new Gson();
     private static final Map<String, AnimationSet> SPELL_ANIMATIONS = new HashMap<>();
-    private static final AnimationSet DEFAULT_ANIMATIONS = new AnimationSet(
-            Animation.CHANTING_ONE_HAND_TOP,
-            Animation.CASTING_ONE_HAND_TOP,
-            Animation.CONTINUOUS_TWO_HAND_FRONT,
-            Animation.CHANTING_ONE_HAND_STAFF_RIGHT,
-            Animation.CASTING_ONE_HAND_STAFF_FRONT_RIGHT,
-            Animation.CHANTING_ONE_HAND_STAFF_LEFT,
-            Animation.CASTING_ONE_HAND_STAFF_FRONT_LEFT,
-            Animation.CONTINUOUS_TWO_HAND_FRONT
-    );
 
     public SpellAnimationLoader() {
         super(GSON, "spell_animations");
@@ -44,12 +33,12 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
             StaticAnimation staffCastRight,
             StaticAnimation staffChantLeft,
             StaticAnimation staffCastLeft,
-            StaticAnimation staffContinuous
+            StaticAnimation staffContinuousRight,
+            StaticAnimation staffContinuousLeft
     ) {}
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profiler) {
-        LOGGER.info("[epicirontest] Loading spell animations from {} resources", resourceList.size());
         SPELL_ANIMATIONS.clear();
 
         resourceList.forEach((location, json) -> {
@@ -68,11 +57,11 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
                             Animation.getByName(getStringOrNull(data, "staff_cast_animation_r")),
                             Animation.getByName(getStringOrNull(data, "staff_chant_animation_l")),
                             Animation.getByName(getStringOrNull(data, "staff_cast_animation_l")),
-                            Animation.getByName(getStringOrNull(data, "staff_continuous_animation"))
+                            Animation.getByName(getStringOrNull(data, "staff_continuous_animation_r")),
+                            Animation.getByName(getStringOrNull(data, "staff_continuous_animation_l"))
                     );
 
                     SPELL_ANIMATIONS.put(spellName, animations);
-                    LOGGER.info("[epicirontest] Loaded animations for spell: {}", spellName);
                 });
             }
         });
@@ -81,8 +70,7 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
     public static AnimationSet getAnimations(String spellName) {
         AnimationSet animations = SPELL_ANIMATIONS.get(spellName);
         if (animations == null) {
-            LOGGER.debug("[epicirontest] No custom animations found for spell: {}, using defaults", spellName);
-            return DEFAULT_ANIMATIONS;
+            return SPELL_ANIMATIONS.get("default");
         }
         return animations;
     }

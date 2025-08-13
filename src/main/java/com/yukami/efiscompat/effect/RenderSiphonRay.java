@@ -31,15 +31,14 @@ public class RenderSiphonRay {
         var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
         PoseStack poseStack = event.getPoseStack();
         assert livingEntity != null;
-        float pitch = livingEntity.getXRot();
         SyncedSpellData syncedSpellData = ClientMagicData.getSyncedSpellData(livingEntity);
-            if (syncedData.isCasting() && ((AbstractSpell) SpellRegistry.RAY_OF_SIPHONING_SPELL.get()).getSpellId().equals(syncedSpellData.getCastingSpellId())) {
-                poseStack.pushPose();
-                poseStack.translate(0, -1.5f, 0);
-                SpellRenderingHelper.renderSpellHelper(syncedSpellData, livingEntity, poseStack, buffer, event.getPartialTick());
-                poseStack.popPose();
-            }
+        if (syncedData.isCasting() && SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId().equals(syncedSpellData.getCastingSpellId())) {
+            poseStack.pushPose();
+            poseStack.translate(0, -1.5f, 0);
+            SpellRenderingHelper.renderSpellHelper(syncedSpellData, livingEntity, poseStack, buffer, event.getPartialTick());
+            poseStack.popPose();
         }
+    }
         @SubscribeEvent
         public static void renderRayTPS(RenderPlayerEvent event){
             if (event.getEntity() instanceof Player) {

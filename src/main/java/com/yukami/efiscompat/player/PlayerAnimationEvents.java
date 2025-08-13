@@ -1,7 +1,5 @@
 package com.yukami.epicironcompat.player;
 
-import com.mojang.logging.LogUtils;
-import com.yukami.epicironcompat.animation.Animation;
 import com.yukami.epicironcompat.config.CommonConfig;
 import com.yukami.epicironcompat.data.SpellAnimationLoader;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
@@ -11,21 +9,16 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.slf4j.Logger;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import com.yukami.epicironcompat.data.SpellAnimationLoader.AnimationSet;
-import static com.yukami.epicironcompat.utils.CompatUtils.isHoldingStaffMainHand;
-import static com.yukami.epicironcompat.utils.CompatUtils.isHoldingStaffOffHand;
+import static com.yukami.epicironcompat.utils.CompatUtils.*;
 
 @Mod.EventBusSubscriber(modid = "efiscompat")
 public class PlayerAnimationEvents {
-    private static final Logger LOGGER = LogUtils.getLogger();
-    private static StaticAnimation nextAnim;
 
     private static StaticAnimation getChantAnimation(AnimationSet set, Player player) {
         if (isHoldingStaffMainHand(player)) {
@@ -46,12 +39,16 @@ public class PlayerAnimationEvents {
     }
 
     private static StaticAnimation getContinuousAnimation(AnimationSet set, Player player) {
-        if (isHoldingStaffMainHand(player) || isHoldingStaffOffHand(player)) {
-            StaticAnimation staffAnim = set.staffContinuous();
-            return staffAnim != null ? staffAnim : Animation.CONTINUOUS_TWO_HAND_FRONT;
+        AnimationSet defaultSet = SpellAnimationLoader.getAnimations("default");
+        if (isHoldingStaffMainHand(player)) {
+            StaticAnimation staffAnim = set.staffContinuousRight();
+            return staffAnim != null ? staffAnim : defaultSet.staffContinuousRight();
+        } else if (isHoldingStaffOffHand(player)) {
+            StaticAnimation staffAnim = set.staffContinuousLeft();
+            return staffAnim != null ? staffAnim : defaultSet.staffContinuousLeft();
         }
         StaticAnimation normalAnim = set.continuous();
-        return normalAnim != null ? normalAnim : Animation.CONTINUOUS_TWO_HAND_FRONT;
+        return normalAnim != null ? normalAnim : defaultSet.continuous();
     }
 
     private static boolean canCastSpell(ServerPlayerPatch playerpatch, Player player) {
@@ -72,10 +69,8 @@ public class PlayerAnimationEvents {
         String sid = event.getSpellId();
         AbstractSpell spell = SpellRegistry.getSpell(sid);
         if (spell.getCastType() == CastType.LONG) {
-            LOGGER.info("[epicirontest] Looking up animations for spell: {}", spell.getSpellName());
             AnimationSet animations = SpellAnimationLoader.getAnimations(spell.getSpellName());
             if (animations != null) {
-                nextAnim = getCastAnimation(animations, player);
                 StaticAnimation chantAnim = getChantAnimation(animations, player);
                 if (chantAnim != null) {
                     playerpatch.playAnimationSynchronized(chantAnim, 0F);
@@ -93,18 +88,14 @@ public class PlayerAnimationEvents {
         AbstractSpell spell = SpellRegistry.getSpell(sid);
         CastType castType = spell.getCastType();
 
-        LOGGER.info("[epicirontest] Looking up animations for spell: {}", spell.getSpellName());
         AnimationSet animations = SpellAnimationLoader.getAnimations(spell.getSpellName());
         StaticAnimation castAnimation = null;
 
         if (animations != null) {
             if (castType == CastType.CONTINUOUS) {
                 castAnimation = getContinuousAnimation(animations, player);
-            } else if (castType == CastType.INSTANT) {
-                castAnimation = getCastAnimation(animations, player);
             } else {
-                castAnimation = nextAnim;
-                nextAnim = null;
+                castAnimation = getCastAnimation(animations, player);
             }
         }
 

@@ -1,8 +1,8 @@
 {
   "spells": {
-    "firebolt": {
-      "chant_animation": "CHANTING_TWO_HAND_BACK",
-      "cast_animation": "CASTING_TWO_HAND_BACK",
+    "fireball": {
+      "chant_animation": "CHANTING_TWO_HAND_STOMP",
+      "cast_animation": "CASTING_TWO_HAND_STOMP",
       "continuous_animation": "",
       "staff_chant_animation_r": "CHANTING_ONE_HAND_STAFF_RIGHT",
       "staff_cast_animation_r": "CASTING_ONE_HAND_STAFF_FRONT_RIGHT",
