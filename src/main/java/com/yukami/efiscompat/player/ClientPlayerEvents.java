@@ -1,7 +1,7 @@
-package com.yukami.epicironcompat.player;
+package com.yukami.efiscompat.player;
 
-import com.yukami.epicironcompat.EpicFightIronCompat;
-import com.yukami.epicironcompat.config.CommonConfig;
+import com.yukami.efiscompat.EpicFightIronCompat;
+import com.yukami.efiscompat.config.CommonConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastType;

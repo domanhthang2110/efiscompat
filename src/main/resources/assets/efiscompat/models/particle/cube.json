@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "efiscompat:textures/particle/cube",
+    "down": "efiscompat:textures/particle/cube",
+    "up": "efiscompat:textures/particle/cube",
+    "north": "efiscompat:textures/particle/cube",
+    "east": "efiscompat:textures/particle/cube",
+    "south": "efiscompat:textures/particle/cube",
+    "west": "efiscompat:textures/particle/cube"
+  }
+} 

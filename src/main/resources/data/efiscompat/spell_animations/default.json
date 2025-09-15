@@ -8,17 +8,8 @@
       "staff_cast_animation_r": "CASTING_ONE_HAND_STAFF_FRONT_RIGHT",
       "staff_chant_animation_l": "CHANTING_ONE_HAND_STAFF_LEFT",
       "staff_cast_animation_l": "CASTING_ONE_HAND_STAFF_FRONT_LEFT",
-      "staff_continuous_animation": "CONTINUOUS_TWO_HAND_FRONT"
-    },
-    "firebolt": {
-      "chant_animation": "CHANTING_TWO_HAND_BACK",
-      "cast_animation": "CASTING_TWO_HAND_BACK",
-      "continuous_animation": "",
-      "staff_chant_animation_r": "CHANTING_ONE_HAND_STAFF_RIGHT",
-      "staff_cast_animation_r": "CASTING_ONE_HAND_STAFF_FRONT_RIGHT",
-      "staff_chant_animation_l": "CHANTING_ONE_HAND_STAFF_LEFT",
-      "staff_cast_animation_l": "CASTING_ONE_HAND_STAFF_FRONT_LEFT",
-      "staff_continuous_animation": ""
+      "staff_continuous_animation_r": "CONTINUOUS_ONE_HAND_STAFF_RIGHT",
+      "staff_continuous_animation_l": "CONTINUOUS_ONE_HAND_STAFF_LEFT"
     }
   }
 }

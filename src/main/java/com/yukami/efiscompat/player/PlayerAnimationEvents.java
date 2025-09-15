@@ -1,7 +1,7 @@
-package com.yukami.epicironcompat.player;
+package com.yukami.efiscompat.player;
 
-import com.yukami.epicironcompat.config.CommonConfig;
-import com.yukami.epicironcompat.data.SpellAnimationLoader;
+import com.yukami.efiscompat.config.CommonConfig;
+import com.yukami.efiscompat.data.SpellAnimationLoader;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
 import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -14,13 +14,21 @@ import net.minecraftforge.fml.common.Mod;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import com.yukami.epicironcompat.data.SpellAnimationLoader.AnimationSet;
-import static com.yukami.epicironcompat.utils.CompatUtils.*;
+import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
+import com.yukami.efiscompat.data.SpellAnimationLoader.AnimationSet;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+
+import static com.yukami.efiscompat.utils.CompatUtils.*;
+
+import java.util.logging.LogManager;
 
 @Mod.EventBusSubscriber(modid = "efiscompat")
 public class PlayerAnimationEvents {
 
-    private static StaticAnimation getChantAnimation(AnimationSet set, Player player) {
+    private static AnimationAccessor<StaticAnimation> getChantAnimation(AnimationSet set, Player player) {
         if (isHoldingStaffMainHand(player)) {
             return set.staffChantRight();
         } else if (isHoldingStaffOffHand(player)) {
@@ -29,7 +37,7 @@ public class PlayerAnimationEvents {
         return set.chant();
     }
 
-    private static StaticAnimation getCastAnimation(AnimationSet set, Player player) {
+    private static AnimationAccessor<StaticAnimation> getCastAnimation(AnimationSet set, Player player) {
         if (isHoldingStaffMainHand(player)) {
             return set.staffCastRight();
         } else if (isHoldingStaffOffHand(player)) {
@@ -38,21 +46,27 @@ public class PlayerAnimationEvents {
         return set.cast();
     }
 
-    private static StaticAnimation getContinuousAnimation(AnimationSet set, Player player) {
+    private static AnimationAccessor<StaticAnimation> getContinuousAnimation(AnimationSet set, Player player) {
+        if (FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
+            // On the server, return a safe StaticAnimation or null to prevent client-side AimAnimation methods from being called.
+            // Assuming 'default' set's continuous animation is a StaticAnimation and safe for server.
+            return SpellAnimationLoader.getAnimations("default").continuous();
+        }
+
         AnimationSet defaultSet = SpellAnimationLoader.getAnimations("default");
         if (isHoldingStaffMainHand(player)) {
-            StaticAnimation staffAnim = set.staffContinuousRight();
+            AnimationAccessor<StaticAnimation> staffAnim = set.staffContinuousRight();
             return staffAnim != null ? staffAnim : defaultSet.staffContinuousRight();
         } else if (isHoldingStaffOffHand(player)) {
-            StaticAnimation staffAnim = set.staffContinuousLeft();
+            AnimationAccessor<StaticAnimation> staffAnim = set.staffContinuousLeft();
             return staffAnim != null ? staffAnim : defaultSet.staffContinuousLeft();
         }
-        StaticAnimation normalAnim = set.continuous();
+        AnimationAccessor<StaticAnimation> normalAnim = set.continuous();
         return normalAnim != null ? normalAnim : defaultSet.continuous();
     }
 
     private static boolean canCastSpell(ServerPlayerPatch playerpatch, Player player) {
-        return !(playerpatch.isChargingSkill() || playerpatch.isStunned() ||
+        return !(playerpatch.isStunned() ||
                 playerpatch.getTickSinceLastAction() <= (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay));
     }
 
@@ -71,7 +85,7 @@ public class PlayerAnimationEvents {
         if (spell.getCastType() == CastType.LONG) {
             AnimationSet animations = SpellAnimationLoader.getAnimations(spell.getSpellName());
             if (animations != null) {
-                StaticAnimation chantAnim = getChantAnimation(animations, player);
+                AnimationAccessor<StaticAnimation> chantAnim = getChantAnimation(animations, player);
                 if (chantAnim != null) {
                     playerpatch.playAnimationSynchronized(chantAnim, 0F);
                 }
@@ -89,7 +103,7 @@ public class PlayerAnimationEvents {
         CastType castType = spell.getCastType();
 
         AnimationSet animations = SpellAnimationLoader.getAnimations(spell.getSpellName());
-        StaticAnimation castAnimation = null;
+        AnimationAccessor<StaticAnimation> castAnimation = null;
 
         if (animations != null) {
             if (castType == CastType.CONTINUOUS) {
@@ -101,6 +115,7 @@ public class PlayerAnimationEvents {
 
         if (castAnimation != null) {
             playerpatch.playAnimationSynchronized(castAnimation, 0);
+            LogUtils.getLogger().warn("Playing cast animation for spell: " + sid );
         }
     }
 }

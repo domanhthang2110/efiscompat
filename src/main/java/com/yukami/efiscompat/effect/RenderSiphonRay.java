@@ -1,11 +1,8 @@
-package com.yukami.epicironcompat.effect;
+package com.yukami.efiscompat.effect;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.logging.LogUtils;
-import com.yukami.epicironcompat.EpicFightIronCompat;
+import com.yukami.efiscompat.EpicFightIronCompat;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;

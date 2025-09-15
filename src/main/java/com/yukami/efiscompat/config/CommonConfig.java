@@ -1,7 +1,7 @@
-package com.yukami.epicironcompat.config;
+package com.yukami.efiscompat.config;
 
 import com.mojang.logging.LogUtils;
-import com.yukami.epicironcompat.EpicFightIronCompat;
+import com.yukami.efiscompat.EpicFightIronCompat;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

@@ -1,6 +1,6 @@
-package com.yukami.epicironcompat.mixin;
+package com.yukami.efiscompat.mixin;
 
-import com.yukami.epicironcompat.config.CommonConfig;
+import com.yukami.efiscompat.config.CommonConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import yesman.epicfight.skill.dodge.DodgeSkill;
-import yesman.epicfight.skill.guard.GuardSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
 @Mixin(value = DodgeSkill.class, remap = false)

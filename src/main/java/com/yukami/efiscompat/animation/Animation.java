@@ -1,147 +1,202 @@
-package com.yukami.epicironcompat.animation;
+package com.yukami.efiscompat.animation;
 
-import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
-import yesman.epicfight.api.animation.Joint;
+import com.yukami.efiscompat.EpicFightIronCompat;
+import com.yukami.efiscompat.AnimType;
+import com.yukami.efiscompat.AnimProps;
+import com.yukami.efiscompat.effect.BlackHoleEffectManager;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import yesman.epicfight.api.animation.AnimationManager;
+import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
+import yesman.epicfight.api.animation.AnimationManager.AnimationRegistryEvent;
 import yesman.epicfight.api.animation.property.AnimationEvent;
+import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.forgeevent.AnimationRegistryEvent;
-import yesman.epicfight.api.utils.math.Vec3f;
+import yesman.epicfight.api.animation.types.ActionAnimation;
+import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.gameasset.Armatures;
-import yesman.epicfight.model.armature.HumanoidArmature;
-import com.yukami.epicironcompat.utils.CompatUtils;
-
-import javax.annotation.Nullable;
+import net.minecraft.world.entity.player.Player;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import yesman.epicfight.api.utils.TimePairList;
 
 public class Animation {
-    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
+    public static AnimationAccessor<StaticAnimation> CHANTING_ONE_HAND_STAFF_LEFT;
+    public static AnimationAccessor<StaticAnimation> CASTING_ONE_HAND_TOP;
+    public static AnimationAccessor<StaticAnimation> CASTING_ONE_HAND_BELOW;
+    public static AnimationAccessor<StaticAnimation> CASTING_ONE_HAND_INWARD;
+    public static AnimationAccessor<StaticAnimation> CASTING_ONE_HAND_BUFF;
+    public static AnimationAccessor<StaticAnimation> CASTING_TWO_HAND_BACK;
+    public static AnimationAccessor<StaticAnimation> CASTING_TWO_HAND_TOP;
+    public static AnimationAccessor<StaticAnimation> CASTING_TWO_HAND_STAFF_TOP;
+    public static AnimationAccessor<StaticAnimation> CASTING_ONE_HAND_STAFF_TOP_RIGHT;
+    public static AnimationAccessor<StaticAnimation> CASTING_ONE_HAND_STAFF_TOP_LEFT;
+    public static AnimationAccessor<StaticAnimation> CHANTING_ONE_HAND_FRONT;
+    public static AnimationAccessor<StaticAnimation> CHANTING_TWO_HAND_TOP;
+    public static AnimationAccessor<StaticAnimation> CHANTING_ONE_HAND_TOP;
+    public static AnimationAccessor<StaticAnimation> CASTING_ONE_HAND_STAFF_FRONT_RIGHT;
+    public static AnimationAccessor<StaticAnimation> CASTING_ONE_HAND_STAFF_FRONT_LEFT;
+    public static AnimationAccessor<StaticAnimation> CHANTING_TWO_HAND_BACK;
+    public static AnimationAccessor<StaticAnimation> CHANTING_ONE_HAND_STAFF_RIGHT;
+    public static AnimationAccessor<StaticAnimation> CHANTING_TWO_HAND_STAFF_TOP;
+    public static AnimationAccessor<StaticAnimation> CONTINUOUS_TWO_HAND_FRONT;
+    public static AnimationAccessor<StaticAnimation> CHANTING_TWO_HAND_STOMP;
+    public static AnimationAccessor<StaticAnimation> CHANTING_ONE_HAND_STOMP;
+    public static AnimationAccessor<StaticAnimation> CASTING_TWO_HAND_STOMP;
+    public static AnimationAccessor<StaticAnimation> CONTINUOUS_ONE_HAND_STAFF_RIGHT;
+    public static AnimationAccessor<StaticAnimation> CONTINUOUS_ONE_HAND_STAFF_LEFT;
+    public static AnimationAccessor<StaticAnimation> CHANTING_GOJO;
+    public static AnimationAccessor<StaticAnimation> CASTING_GOJO;
+    public static AnimationAccessor<StaticAnimation> CHANTING_TWO_HAND_EXPLOSION;
+    public static AnimationAccessor<StaticAnimation> CASTING_TWO_HAND_EXPLOSION;
+    public static AnimationAccessor<StaticAnimation> CASTING_TWO_HAND_BELOW_RIGHT;
+    public static AnimationAccessor<ActionAnimation> CHANTING_TWO_HAND_FLYING;
+    public static AnimationAccessor<ActionAnimation> CASTING_TWO_HAND_FLYING;
+    public static AnimationAccessor<ActionAnimation> CHANTING_TWO_HAND_ASCENSION;
+    public static AnimationAccessor<ActionAnimation> CASTING_TWO_HAND_ASCENSION;
 
-    public static StaticAnimation CHANTING_ONE_HAND_STAFF_LEFT;
-    public static StaticAnimation CASTING_ONE_HAND_TOP;
-    public static StaticAnimation CASTING_ONE_HAND_BELOW;
-    public static StaticAnimation CASTING_ONE_HAND_INWARD;
-    public static StaticAnimation CASTING_ONE_HAND_BUFF;
-    public static StaticAnimation CASTING_TWO_HAND_BACK;
-    public static StaticAnimation CASTING_TWO_HAND_TOP;
-    public static StaticAnimation CASTING_TWO_HAND_STAFF_TOP;
-    public static StaticAnimation CASTING_ONE_HAND_STAFF_TOP_RIGHT;
-    public static StaticAnimation CASTING_ONE_HAND_STAFF_TOP_LEFT;
-    public static StaticAnimation CHANTING_ONE_HAND_FRONT;
-    public static StaticAnimation CHANTING_TWO_HAND_TOP;
-    public static StaticAnimation CHANTING_ONE_HAND_TOP;
-    public static StaticAnimation CASTING_ONE_HAND_STAFF_FRONT_RIGHT;
-    public static StaticAnimation CASTING_ONE_HAND_STAFF_FRONT_LEFT;
-    public static StaticAnimation CHANTING_TWO_HAND_BACK;
-    public static StaticAnimation CHANTING_ONE_HAND_STAFF_RIGHT;
-    public static StaticAnimation CHANTING_TWO_HAND_STAFF_TOP;
-    public static StaticAnimation CONTINUOUS_TWO_HAND_FRONT;
-    public static StaticAnimation CHANTING_TWO_HAND_STOMP;
-    public static StaticAnimation CHANTING_ONE_HAND_STOMP;
-    public static StaticAnimation CASTING_TWO_HAND_STOMP;
-    public static StaticAnimation CONTINUOUS_ONE_HAND_STAFF_RIGHT;
-    public static StaticAnimation CONTINUOUS_ONE_HAND_STAFF_LEFT;
-    public static StaticAnimation CHANTING_GOJO;
-    public static StaticAnimation CASTING_GOJO;
-
-    public static void registerAnimations(AnimationRegistryEvent event){
-        event.getRegistryMap().put("efiscompat", Animation::Build);
+    @SubscribeEvent
+    public static void registerAnimations(AnimationRegistryEvent event) {
+        event.newBuilder(EpicFightIronCompat.MODID, Animation::build);
     }
 
-    protected static void Build(){
-        HumanoidArmature biped = Armatures.BIPED;
-
-        //One-handed chanting
-        CHANTING_ONE_HAND_TOP = new StaticAnimation(true, "biped/living/chanting_one_hand_top", biped);
-        CHANTING_ONE_HAND_FRONT = new StaticAnimation(true, "biped/living/chanting_one_hand_front", biped);
-        CHANTING_ONE_HAND_STAFF_RIGHT = new StaticAnimation(true, "biped/living/chanting_one_hand_staff_right", biped);
-        CHANTING_ONE_HAND_STAFF_LEFT= new StaticAnimation(true, "biped/living/chanting_one_hand_staff_left", biped);
-        //One-handed casting
-        CASTING_ONE_HAND_TOP = new StaticAnimation(false, "biped/living/casting_one_hand_top", biped);
-        CASTING_ONE_HAND_BELOW = new StaticAnimation(false, "biped/living/casting_one_hand_below", biped);
-        CASTING_ONE_HAND_INWARD = new StaticAnimation(false, "biped/living/casting_one_hand_inward", biped);
-        CASTING_ONE_HAND_BUFF = new StaticAnimation(false, "biped/living/casting_one_hand_buff", biped);
-        CASTING_ONE_HAND_STAFF_TOP_RIGHT = new StaticAnimation(false, "biped/living/casting_one_hand_staff_top_right", biped);
-        CASTING_ONE_HAND_STAFF_TOP_LEFT = new StaticAnimation(false, "biped/living/casting_one_hand_staff_top_left", biped);
-        CASTING_ONE_HAND_STAFF_FRONT_RIGHT = new StaticAnimation(false, "biped/living/casting_one_hand_staff_front_right", biped);
-        CASTING_ONE_HAND_STAFF_FRONT_LEFT = new StaticAnimation(false, "biped/living/casting_one_hand_staff_front_left", biped);
-        //Two-handed chanting
-        CHANTING_TWO_HAND_BACK = new StaticAnimation(true, "biped/living/chanting_two_hand_back", biped).addEvents(AnimationEvent.TimePeriodEvent.create(0f, 5f, ReusableEvent.HAND_FIRE, AnimationEvent.Side.CLIENT));;
-        CHANTING_TWO_HAND_TOP = new StaticAnimation(false, "biped/living/chanting_two_hand_top", biped);
-        CHANTING_TWO_HAND_STAFF_TOP = new StaticAnimation(true, "biped/living/chanting_two_hand_staff_top", biped);
-        CHANTING_TWO_HAND_STOMP = new StaticAnimation(true, "biped/living/chanting_two_hand_stomp", biped);
-        CHANTING_ONE_HAND_STOMP = new StaticAnimation(true, "biped/living/chanting_one_hand_stomp", biped);
-        CHANTING_GOJO = new StaticAnimation(true, "biped/living/chanting_gojo_pose", biped).addEvents(AnimationEvent.TimePeriodEvent.create(0.5f, 5f, ReusableEvent.HAND_FIRE, AnimationEvent.Side.CLIENT));
-        CASTING_GOJO = new StaticAnimation(false, "biped/living/casting_gojo", biped);
-        //Two-handed casting
-        CASTING_TWO_HAND_BACK = new StaticAnimation(false, "biped/living/casting_two_hand_back", biped);
-        CASTING_TWO_HAND_TOP = new StaticAnimation(false, "biped/living/casting_two_hand_top", biped);
-        CASTING_TWO_HAND_STAFF_TOP = new StaticAnimation(false, "biped/living/casting_two_hand_staff_top", biped);
-        CASTING_TWO_HAND_STOMP = new StaticAnimation(false, "biped/living/casting_two_hand_stomp", biped);
-        //Continuous
-        CONTINUOUS_TWO_HAND_FRONT = new StaticAnimation(false, "biped/living/continuous_two_hand_front", biped);
-        CONTINUOUS_ONE_HAND_STAFF_RIGHT = new StaticAnimation(false, "biped/living/continuous_one_hand_staff_right", biped);
-        CONTINUOUS_ONE_HAND_STAFF_LEFT = new StaticAnimation(false, "biped/living/continuous_one_hand_staff_left", biped);
-    }
-
-    public static StaticAnimation getByName(String name) {
-        if (name == null || name.isEmpty()) return null;
-
+    @SuppressWarnings("unchecked")
+    public static AnimationAccessor<StaticAnimation> getAnimation(String name) {
         try {
-            return (StaticAnimation) Animation.class.getField(name).get(null);
-        } catch (Exception e) {
+            Field field = Animation.class.getField(name.toUpperCase());
+            Object value = field.get(null);
+            return AnimationAccessor.class.cast(value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             return null;
         }
     }
 
-    public static class ReusableEvent {
-
-        public static void spawnHandParticles(
-                Entity entity,
-                RandomSource random,
-                ParticleOptions particleType,
-                @Nullable Vec3f offset,
-                Joint[] joints
-        ) {
-            if (!entity.level().isClientSide || entity.tickCount % 5 != 0) return;
-
-            for (Joint joint : joints) {
-                Vec3 pos = CompatUtils.getJointWithTranslation(
-                        Minecraft.getInstance().player,
-                        entity,
-                        offset != null ? offset : new Vec3f(0, 0, 0),
-                        joint
-                );
-
-                if (pos != null) {
-                    for (int i = 0; i < 3; i++) {
-                        double x = pos.x + (random.nextDouble() - 0.5) * 0.2;
-                        double y = pos.y;
-                        double z = pos.z + (random.nextDouble() - 0.5) * 0.2;
-
-                        entity.level().addParticle(
-                                particleType,
-                                x, y, z,
-                                0, 0.02, 0
-                        );
-                    }
-                }
-            }
-        }
-        public static AnimationEvent.AnimationEventConsumer createHandParticleEvent(ParticleOptions particle, Joint... joints) {
-            return (livingEntityPatch, staticAnimation, objects) -> {
-                Entity entity = livingEntityPatch.getOriginal();
-                RandomSource random = livingEntityPatch.getOriginal().getRandom();
-                spawnHandParticles(entity, random, particle, null, joints);
-            };
-        }
-        static final AnimationEvent.AnimationEventConsumer HAND_FIRE =
-                createHandParticleEvent(ParticleTypes.FLAME, Armatures.BIPED.toolR, Armatures.BIPED.toolL);
-        static final AnimationEvent.AnimationEventConsumer HAND_SOUL_FIRE =
-                createHandParticleEvent(ParticleTypes.SOUL_FIRE_FLAME, Armatures.BIPED.toolR, Armatures.BIPED.toolL);
+    public static void build(AnimationManager.AnimationBuilder builder) {
+        CHANTING_ONE_HAND_TOP = builder.nextAccessor("biped/living/chanting_one_hand_top", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CHANTING_ONE_HAND_FRONT = builder.nextAccessor("biped/living/chanting_one_hand_front", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CHANTING_ONE_HAND_STAFF_RIGHT = builder.nextAccessor("biped/living/chanting_one_hand_staff_right", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CHANTING_ONE_HAND_STAFF_LEFT = builder.nextAccessor("biped/living/chanting_one_hand_staff_left", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CASTING_ONE_HAND_TOP = builder.nextAccessor("biped/living/casting_one_hand_top", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CASTING_ONE_HAND_BELOW = builder.nextAccessor("biped/living/casting_one_hand_below", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CASTING_ONE_HAND_INWARD = builder.nextAccessor("biped/living/casting_one_hand_inward", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CASTING_ONE_HAND_BUFF = builder.nextAccessor("biped/living/casting_one_hand_buff", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CASTING_ONE_HAND_STAFF_TOP_RIGHT = builder.nextAccessor("biped/living/casting_one_hand_staff_top_right", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CASTING_ONE_HAND_STAFF_TOP_LEFT = builder.nextAccessor("biped/living/casting_one_hand_staff_top_left", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CASTING_ONE_HAND_STAFF_FRONT_RIGHT = builder.nextAccessor("biped/living/casting_one_hand_staff_front_right", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CASTING_ONE_HAND_STAFF_FRONT_LEFT = builder.nextAccessor("biped/living/casting_one_hand_staff_front_left", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CHANTING_TWO_HAND_BACK = builder.nextAccessor("biped/living/chanting_two_hand_back", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CHANTING_TWO_HAND_TOP = builder.nextAccessor("biped/living/chanting_two_hand_top", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CHANTING_TWO_HAND_STAFF_TOP = builder.nextAccessor("biped/living/chanting_two_hand_staff_top", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CHANTING_TWO_HAND_STOMP = builder.nextAccessor("biped/living/chanting_two_hand_stomp", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CHANTING_ONE_HAND_STOMP = builder.nextAccessor("biped/living/chanting_one_hand_stomp", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CHANTING_TWO_HAND_EXPLOSION = builder.nextAccessor("biped/living/chanting_two_hand_explosion", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CHANTING_GOJO = builder.nextAccessor("biped/living/chanting_gojo_pose", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED)
+                .addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND)
+                .addProperty(AnimationProperty.StaticAnimationProperty.ON_BEGIN_EVENTS, Arrays.asList(
+                        AnimationEvent.SimpleEvent.create(
+                                (entitypatch, animation, params) -> {
+                                    if (entitypatch.getOriginal() instanceof Player player) {
+                                        // Start visual-only black hole effect hovering above player with growing animation
+                                        BlackHoleEffectManager.startBlackHoleEffectAbovePlayer(
+                                            player, 
+                                            3.0f, // Maximum scale (grows to 3x)
+                                            120,  // 6 seconds duration for longer effect
+                                            0.1f, // Start very small (0.1x scale)
+                                            3.0f  // End at full dramatic scale (3x)
+                                        );
+                                    }
+                                }, AnimationEvent.Side.BOTH) // Both sides so client can render immediately
+                ))
+                .addProperty(AnimationProperty.StaticAnimationProperty.ON_END_EVENTS, Arrays.asList(
+                        AnimationEvent.SimpleEvent.create(
+                                (entitypatch, animation, params) -> {
+                                    if (entitypatch.getOriginal() instanceof Player player) {
+                                        // Stop the visual black hole effect
+                                        BlackHoleEffectManager.stopBlackHoleEffect(player);
+                                    }
+                                }, AnimationEvent.Side.BOTH) // Both sides for immediate cleanup
+                ))
+        );
+        CHANTING_TWO_HAND_FLYING = builder.nextAccessor("biped/living/chanting_two_hand_flying", (accessor) -> new ActionAnimation(0.0F, accessor, Armatures.BIPED)
+                .addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND)
+                .addProperty(AnimationProperty.ActionAnimationProperty.MOVE_VERTICAL, true)
+                .addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, Float.MAX_VALUE))
+                .newTimePair(0.0F, Float.MAX_VALUE)
+                    .addStateRemoveOld(EntityState.TURNING_LOCKED, false)
+                    .addStateRemoveOld(EntityState.MOVEMENT_LOCKED, false)
+                .addProperty(AnimationProperty.StaticAnimationProperty.ON_BEGIN_EVENTS, Arrays.asList(
+                        AnimationEvent.SimpleEvent.create(
+                                (entitypatch, animation, params) -> {
+                                    if (entitypatch.getOriginal() instanceof Player player) {
+                                        // Start visual-only black hole effect that rises higher over time
+                                        BlackHoleEffectManager.startRisingBlackHoleEffect(
+                                            player, 
+                                            3.0f, // Maximum scale (grows to 3x)
+                                            100,  // 6 seconds duration for longer effect
+                                            0.1f, // Start very small (0.1x scale)
+                                            3.0f, // End at full dramatic scale (3x)
+                                            0.0f, // Starting height above player (at player level)
+                                            1.0f  // Final height above player (rises 3 blocks)
+                                        );
+                                    }
+                                }, AnimationEvent.Side.BOTH) // Both sides so client can render immediately
+                ))
+                .addProperty(AnimationProperty.StaticAnimationProperty.ON_END_EVENTS, Arrays.asList(
+                        AnimationEvent.SimpleEvent.create(
+                                (entitypatch, animation, params) -> {
+                                    if (entitypatch.getOriginal() instanceof Player player) {
+                                        // Stop the visual black hole effect
+                                        BlackHoleEffectManager.stopBlackHoleEffect(player);
+                                    }
+                                }, AnimationEvent.Side.BOTH) // Both sides for immediate cleanup
+                )));
+        CASTING_TWO_HAND_ASCENSION = builder.nextAccessor("biped/living/casting_two_hand_ascension", (accessor) -> new ActionAnimation(0.0F, accessor, Armatures.BIPED)
+                .addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND)
+                .addProperty(AnimationProperty.ActionAnimationProperty.MOVE_VERTICAL, true)
+                .addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, Float.MAX_VALUE)));
+        CHANTING_TWO_HAND_ASCENSION = builder.nextAccessor("biped/living/chanting_two_hand_ascension",
+                (accessor) -> new ActionAnimation(0.0F, accessor, Armatures.BIPED)
+                        .addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND)
+                        .addProperty(AnimationProperty.ActionAnimationProperty.MOVE_VERTICAL, true)
+                        .addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME,
+                                TimePairList.create(0.0F, Float.MAX_VALUE))
+                        .newTimePair(0.0F, Float.MAX_VALUE)
+                        .addStateRemoveOld(EntityState.TURNING_LOCKED, false)
+                        .addStateRemoveOld(EntityState.MOVEMENT_LOCKED, false)
+                        .addProperty(AnimationProperty.StaticAnimationProperty.ON_BEGIN_EVENTS, Arrays.asList(
+                                AnimationEvent.SimpleEvent.create(
+                                        (entitypatch, animation, params) -> {
+                                            if (entitypatch.getOriginal() instanceof Player player) {
+                                                // Start visual-only black hole effect that rises higher over time
+                                                BlackHoleEffectManager.startRisingBlackHoleEffect(
+                                                        player,
+                                                        3.0f, // Maximum scale (grows to 3x)
+                                                        100, // 6 seconds duration for longer effect
+                                                        0.1f, // Start very small (0.1x scale)
+                                                        3.0f, // End at full dramatic scale (3x)
+                                                        -3.0f, // Starting height above player (at player level)
+                                                        1.0f // Final height above player (rises 3 blocks)
+                                                );
+                                            }
+                                        }, AnimationEvent.Side.BOTH) // Both sides so client can render immediately
+                        ))
+                        .addProperty(AnimationProperty.StaticAnimationProperty.ON_END_EVENTS, Arrays.asList(
+                                AnimationEvent.SimpleEvent.create(
+                                        (entitypatch, animation, params) -> {
+                                            if (entitypatch.getOriginal() instanceof Player player) {
+                                                // Stop the visual black hole effect
+                                                BlackHoleEffectManager.stopBlackHoleEffect(player);
+                                            }
+                                        }, AnimationEvent.Side.BOTH) // Both sides for immediate cleanup
+                        )));
+        CASTING_GOJO = builder.nextAccessor("biped/living/casting_gojo", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CASTING_TWO_HAND_BACK = builder.nextAccessor("biped/living/casting_two_hand_back", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CASTING_TWO_HAND_TOP = builder.nextAccessor("biped/living/casting_two_hand_top", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CASTING_TWO_HAND_STAFF_TOP = builder.nextAccessor("biped/living/casting_two_hand_staff_top", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CASTING_TWO_HAND_STOMP = builder.nextAccessor("biped/living/casting_two_hand_stomp", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CASTING_TWO_HAND_EXPLOSION = builder.nextAccessor("biped/living/casting_two_hand_explosion", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CASTING_TWO_HAND_BELOW_RIGHT = builder.nextAccessor("biped/living/casting_two_hand_below_right", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CONTINUOUS_TWO_HAND_FRONT = builder.nextAccessor("biped/living/continuous_two_hand_front", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND));
+        CONTINUOUS_ONE_HAND_STAFF_RIGHT = builder.nextAccessor("biped/living/continuous_one_hand_staff_right", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
+        CONTINUOUS_ONE_HAND_STAFF_LEFT = builder.nextAccessor("biped/living/continuous_one_hand_staff_left", (accessor) -> new StaticAnimation(false, accessor, Armatures.BIPED).addProperty(AnimProps.ANIM_TYPE, AnimType.ONE_HAND));
     }
 }

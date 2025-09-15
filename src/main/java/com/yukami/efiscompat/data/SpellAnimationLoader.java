@@ -1,4 +1,4 @@
-package com.yukami.epicironcompat.data;
+package com.yukami.efiscompat.data;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -11,7 +11,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import com.yukami.epicironcompat.animation.Animation;
+import com.yukami.efiscompat.animation.Animation;
+import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,15 +27,15 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
     }
 
     public record AnimationSet(
-            StaticAnimation chant,
-            StaticAnimation cast,
-            StaticAnimation continuous,
-            StaticAnimation staffChantRight,
-            StaticAnimation staffCastRight,
-            StaticAnimation staffChantLeft,
-            StaticAnimation staffCastLeft,
-            StaticAnimation staffContinuousRight,
-            StaticAnimation staffContinuousLeft
+            AnimationAccessor<StaticAnimation> chant,
+            AnimationAccessor<StaticAnimation> cast,
+            AnimationAccessor<StaticAnimation> continuous,
+            AnimationAccessor<StaticAnimation> staffChantRight,
+            AnimationAccessor<StaticAnimation> staffCastRight,
+            AnimationAccessor<StaticAnimation> staffChantLeft,
+            AnimationAccessor<StaticAnimation> staffCastLeft,
+            AnimationAccessor<StaticAnimation> staffContinuousRight,
+            AnimationAccessor<StaticAnimation> staffContinuousLeft
     ) {}
 
     @Override
@@ -50,15 +51,15 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
                     JsonObject data = entry.getValue().getAsJsonObject();
 
                     AnimationSet animations = new AnimationSet(
-                            Animation.getByName(getStringOrNull(data, "chant_animation")),
-                            Animation.getByName(getStringOrNull(data, "cast_animation")),
-                            Animation.getByName(getStringOrNull(data, "continuous_animation")),
-                            Animation.getByName(getStringOrNull(data, "staff_chant_animation_r")),
-                            Animation.getByName(getStringOrNull(data, "staff_cast_animation_r")),
-                            Animation.getByName(getStringOrNull(data, "staff_chant_animation_l")),
-                            Animation.getByName(getStringOrNull(data, "staff_cast_animation_l")),
-                            Animation.getByName(getStringOrNull(data, "staff_continuous_animation_r")),
-                            Animation.getByName(getStringOrNull(data, "staff_continuous_animation_l"))
+                            Animation.getAnimation(getStringOrNull(data, "chant_animation")),
+                            Animation.getAnimation(getStringOrNull(data, "cast_animation")),
+                            Animation.getAnimation(getStringOrNull(data, "continuous_animation")),
+                            Animation.getAnimation(getStringOrNull(data, "staff_chant_animation_r")),
+                            Animation.getAnimation(getStringOrNull(data, "staff_cast_animation_r")),
+                            Animation.getAnimation(getStringOrNull(data, "staff_chant_animation_l")),
+                            Animation.getAnimation(getStringOrNull(data, "staff_cast_animation_l")),
+                            Animation.getAnimation(getStringOrNull(data, "staff_continuous_animation_r")),
+                            Animation.getAnimation(getStringOrNull(data, "staff_continuous_animation_l"))
                     );
 
                     SPELL_ANIMATIONS.put(spellName, animations);

@@ -1,4 +1,4 @@
-package com.yukami.epicironcompat.mixin;
+package com.yukami.efiscompat.mixin;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -22,6 +22,8 @@ public class MixinOnSpellFinish {
     private void onServerCastComplete(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData, boolean cancelled, CallbackInfo ci) {
         if (entity != null){
             ServerPlayerPatch playerpatch = EpicFightCapabilities.getEntityPatch(entity, ServerPlayerPatch.class);
-            if(playerpatch != null && playerMagicData.getCastType() == CastType.CONTINUOUS) playerpatch.modifyLivingMotionByCurrentItem(false);}
+            if(playerpatch != null && playerMagicData.getCastType() == CastType.CONTINUOUS) 
+                playerpatch.playAnimationSynchronized(yesman.epicfight.gameasset.Animations.OFF_ANIMATION_HIGHEST,
+                        0.0F);}
     }
 }

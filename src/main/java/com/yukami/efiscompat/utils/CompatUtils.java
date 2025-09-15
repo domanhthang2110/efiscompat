@@ -1,7 +1,6 @@
-package com.yukami.epicironcompat.utils;
+package com.yukami.efiscompat.utils;
 
-import com.mojang.logging.LogUtils;
-import com.yukami.epicironcompat.config.CommonConfig;
+import com.yukami.efiscompat.config.CommonConfig;
 import io.redspace.ironsspellbooks.item.weapons.StaffItem;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
@@ -15,7 +14,6 @@ import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
-import java.util.List;
 import java.util.Objects;
 
 public class CompatUtils {
@@ -35,7 +33,7 @@ public class CompatUtils {
     public static Vec3 getJointWithTranslation(LocalPlayer renderer, Entity ent, Vec3f translation, Joint joint) {
         if (renderer != null && ent != null && translation != null) {
             if (renderer.level().isClientSide) {
-                LivingEntityPatch entitypatch = EpicFightCapabilities.getEntityPatch(ent, LivingEntityPatch.class);
+                LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(ent, LivingEntityPatch.class);
                 if (entitypatch != null) {
                     float interpolation = 0.0F;
                     OpenMatrix4f transformMatrix;

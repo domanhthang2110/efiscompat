@@ -1,0 +1,15 @@
+﻿{
+  "spells": {
+    "abyssal_shroud": {
+      "chant_animation": "",
+      "cast_animation": "",
+      "continuous_animation": "",
+      "staff_chant_animation_r": "",
+      "staff_cast_animation_r": "",
+      "staff_chant_animation_l": "",
+      "staff_cast_animation_l": "",
+      "staff_continuous_animation_r": "",
+      "staff_continuous_animation_l": ""
+    }
+  }
+}
