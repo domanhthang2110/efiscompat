@@ -1,11 +1,8 @@
 package com.yukami.epicironcompat.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.logging.LogUtils;
 import com.yukami.epicironcompat.config.CommonConfig;
-import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +21,6 @@ import yesman.epicfight.client.renderer.patched.item.RenderItemBase;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
-import yesman.epicfight.model.armature.HumanoidArmature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 
 import static com.yukami.epicironcompat.utils.CompatUtils.*;
@@ -34,11 +30,12 @@ public class MixinRenderItemBase {
 
     @Inject(method = "renderItemInHand",
             at = @At("HEAD"), cancellable = true, remap = false)
-    private void onRenderItemInHandStart(ItemStack stack, LivingEntityPatch<?> entitypatch, InteractionHand hand, HumanoidArmature armature, OpenMatrix4f[] poses, MultiBufferSource buffer, PoseStack poseStack, int packedLight, float partialTicks, CallbackInfo ci) {
+    private void onRenderItemInHandStart(ItemStack stack, LivingEntityPatch<?> entitypatch, InteractionHand hand, OpenMatrix4f[] poses, MultiBufferSource buffer, PoseStack poseStack, int packedLight, float partialTicks, CallbackInfo ci) {
         LivingEntity originalEntity = entitypatch.getOriginal();
         if (originalEntity instanceof LocalPlayer player) {
-            if (ClientMagicData.isCasting()){
-                if ((!isHoldingStaffOffHand(player) && CommonConfig.hideOffHandItems && hand == InteractionHand.OFF_HAND) || (efiscompat$isTwoHandedAnim(player) && !isHoldingStaffMainHand(player))) ci.cancel();
+            if (ClientMagicData.isCasting()) {
+                if ((!isHoldingStaffOffHand(player) && CommonConfig.hideOffHandItems && hand == InteractionHand.OFF_HAND) || (efiscompat$isTwoHandedAnim(player) && !isHoldingStaffMainHand(player)))
+                    ci.cancel();
             }
         }
     }
@@ -50,7 +47,7 @@ public class MixinRenderItemBase {
             ClientAnimator animator = playerPatch.getClientAnimator();
             Layer layer = animator.getCompositeLayer(Layer.Priority.HIGHEST);
             AnimationPlayer animationPlayer = layer.animationPlayer; // Get the animator
-            DynamicAnimation anim = animationPlayer.getAnimation();
+            DynamicAnimation anim = animationPlayer.getAnimation().get();
             return anim.toString().contains("two_hand") && CommonConfig.hideTwoHandedItems;
         }
         return false;

@@ -1,57 +1,46 @@
 package com.yukami.epicironcompat.player;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.logging.LogUtils;
+import com.yukami.epicironcompat.EpicFightIronCompat;
 import com.yukami.epicironcompat.animation.Animation;
 import com.yukami.epicironcompat.animation.MagicAnimation;
 import com.yukami.epicironcompat.config.CommonConfig;
-import com.yukami.epicironcompat.utils.CompatUtils;
+import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
 import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.item.weapons.StaffItem;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.jline.utils.Log;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
 import static com.yukami.epicironcompat.utils.CompatUtils.*;
 
 @Mod.EventBusSubscriber(
-        modid = "efiscompat"
+        modid = EpicFightIronCompat.MODID
 )
-
 public class PlayerAnimationEvents {
 
-    private static StaticAnimation nextAnim;
+    private static AnimationAccessor<StaticAnimation> nextAnim;
 
-    private static StaticAnimation searchAnimations(Player player, CastType castType, String spellID)
-    {
-        StaticAnimation chantingAnims;
+    private static AnimationAccessor<StaticAnimation> searchAnimations(Player player, CastType castType, String spellID) {
+        AnimationAccessor<StaticAnimation> chantingAnims;
         AbstractSpell spell = SpellRegistry.getSpell(spellID);
-        if (isHoldingStaffMainHand(player))
-        {
-            Pair<StaticAnimation, StaticAnimation> animPair = MagicAnimation.getMagicStaffAnimations(spell.getSpellName());
+        if (isHoldingStaffMainHand(player)) {
+            Pair<AnimationAccessor<StaticAnimation>, AnimationAccessor<StaticAnimation>> animPair = MagicAnimation.getMagicStaffAnimations(spell.getSpellName());
             chantingAnims = animPair.getFirst();
             nextAnim = animPair.getSecond();
-        }
-        else if (isHoldingStaffOffHand(player) && !isHoldingStaffMainHand(player)){
-            Pair<StaticAnimation, StaticAnimation> animPair = MagicAnimation.getRandomStaffLeftFallbackPair();
+        } else if (isHoldingStaffOffHand(player) && !isHoldingStaffMainHand(player)) {
+            Pair<AnimationAccessor<StaticAnimation>, AnimationAccessor<StaticAnimation>> animPair = MagicAnimation.getRandomStaffLeftFallbackPair();
             chantingAnims = animPair.getFirst();
             nextAnim = animPair.getSecond();
-        }
-        else
-        {
-            Pair<StaticAnimation, StaticAnimation> animPair = MagicAnimation.getMagicAnimations(spell.getSpellName());
+        } else {
+            Pair<AnimationAccessor<StaticAnimation>, AnimationAccessor<StaticAnimation>> animPair = MagicAnimation.getMagicAnimations(spell.getSpellName());
             chantingAnims = animPair.getFirst();
             nextAnim = animPair.getSecond();
         }
@@ -76,7 +65,7 @@ public class PlayerAnimationEvents {
     @SubscribeEvent
     public static void beforeSpellCast(SpellPreCastEvent event) {
         Player player = event.getEntity();
-        StaticAnimation chantingAnimation = null;
+        AnimationAccessor<StaticAnimation> chantingAnimation = null;
         ServerPlayerPatch playerpatch;
         String sid = event.getSpellId();
         AbstractSpell spell = SpellRegistry.getSpell(sid);
@@ -84,8 +73,10 @@ public class PlayerAnimationEvents {
         if (player instanceof ServerPlayer) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
             chantingAnimation = searchAnimations(player, castType, sid);
-            if(playerpatch.isChargingSkill() || playerpatch.isStunned() || playerpatch.getTickSinceLastAction() <= (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay)) {
-                event.setCanceled(true);}
+            // TODO: FIND THE equivalent of isChargingSkill() before merge
+            if (/*playerpatch.isChargingSkill() || */playerpatch.isStunned() || playerpatch.getTickSinceLastAction() <= (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay)) {
+                event.setCanceled(true);
+            }
             if (chantingAnimation != null && castType == CastType.LONG && playerpatch.getTickSinceLastAction() > (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay)) {
                 playerpatch.playAnimationSynchronized(chantingAnimation, 0F);
             }
@@ -95,7 +86,7 @@ public class PlayerAnimationEvents {
     @SubscribeEvent
     public static void onSpellCast(SpellOnCastEvent event) {
         Player player = event.getEntity();
-        StaticAnimation castAnimation;
+        AnimationAccessor<StaticAnimation> castAnimation;
         ServerPlayerPatch playerpatch;
         String sid = event.getSpellId();
         AbstractSpell spell = SpellRegistry.getSpell(sid);
@@ -103,10 +94,9 @@ public class PlayerAnimationEvents {
         if (player instanceof ServerPlayer && castType != null) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
             //castAnimation = searchCasts(player, castType, sid);
-            if (castType == CastType.CONTINUOUS){
+            if (castType == CastType.CONTINUOUS) {
                 castAnimation = Animation.CONTINUOUS_TWO_HAND_FRONT;
-            }
-            else castAnimation = nextAnim;
+            } else castAnimation = nextAnim;
             if (castAnimation != null) {
                 playerpatch.playAnimationSynchronized(castAnimation, 0);
                 nextAnim = null;

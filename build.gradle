@@ -147,15 +147,8 @@ repositories {
     maven { url = "https://maven.enginehub.org/repo/" }
     maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
     maven { url = "https://maven.theillusivec4.top" }
-    maven { url = "https://cursemaven.com" }
     maven { url = "https://maven.blamejared.com" }
     maven { url = "https://maven.kosmx.dev/" }
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
     flatDir {
         dir './libs'
     }
@@ -173,11 +166,9 @@ dependencies {
 
     // Apply Mixin AP
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation fg.deobf("curse.maven:epic-fight-mod-405076:5922122")
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:7046104")
     implementation fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${irons_spells_version}")
-    runtimeOnly fg.deobf("curse.maven:travelers-backpack-321117:5529995")
     runtimeOnly fg.deobf("curse.maven:geckolib-388172:5675221")
-    runtimeOnly fg.deobf("curse.maven:weapons-of-miracles-epicfight-918614:5647351")
     runtimeOnly fg.deobf("curse.maven:elytra-slot-317716:5583756")
     runtimeOnly fg.deobf("curse.maven:curios-309927:5680164")
     runtimeOnly fg.deobf("curse.maven:embeddium-908741:5681725")
@@ -215,11 +206,11 @@ mixin {
 // See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [
-            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
-            forge_version: forge_version, forge_version_range: forge_version_range,
+            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+            forge_version       : forge_version, forge_version_range: forge_version_range,
             loader_version_range: loader_version_range,
-            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-            mod_authors: mod_authors, mod_description: mod_description,
+            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors         : mod_authors, mod_description: mod_description,
     ]
     inputs.properties replaceProperties
 
