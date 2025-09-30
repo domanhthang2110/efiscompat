@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.skill.modules.ChargeableSkill;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
@@ -28,7 +29,7 @@ public class PlayerAnimationEvents {
 
     private static AnimationAccessor<StaticAnimation> nextAnim;
 
-    private static AnimationAccessor<StaticAnimation> searchAnimations(Player player, CastType castType, String spellID) {
+    private static AnimationAccessor<StaticAnimation> searchAnimations(Player player, String spellID) {
         AnimationAccessor<StaticAnimation> chantingAnims;
         AbstractSpell spell = SpellRegistry.getSpell(spellID);
         if (isHoldingStaffMainHand(player)) {
@@ -72,9 +73,9 @@ public class PlayerAnimationEvents {
         CastType castType = spell.getCastType();
         if (player instanceof ServerPlayer) {
             playerpatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), ServerPlayerPatch.class);
-            chantingAnimation = searchAnimations(player, castType, sid);
-            // TODO: FIND THE equivalent of isChargingSkill() before merge
-            if (/*playerpatch.isChargingSkill() || */playerpatch.isStunned() || playerpatch.getTickSinceLastAction() <= (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay)) {
+            chantingAnimation = searchAnimations(player, sid);
+            final boolean isChargingSkill = playerpatch.getHoldingSkill() instanceof ChargeableSkill;
+            if (isChargingSkill || playerpatch.isStunned() || playerpatch.getTickSinceLastAction() <= (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay)) {
                 event.setCanceled(true);
             }
             if (chantingAnimation != null && castType == CastType.LONG && playerpatch.getTickSinceLastAction() > (player.getCurrentItemAttackStrengthDelay() * CommonConfig.castingDelay)) {
