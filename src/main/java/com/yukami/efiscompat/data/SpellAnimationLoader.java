@@ -39,7 +39,7 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
     ) {}
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> resourceList, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profiler) {
+    protected void apply(@NotNull Map<ResourceLocation, JsonElement> resourceList, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profiler) {
         SPELL_ANIMATIONS.clear();
 
         resourceList.forEach((location, json) -> {
@@ -50,19 +50,24 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
                     String spellName = entry.getKey();
                     JsonObject data = entry.getValue().getAsJsonObject();
 
-                    AnimationSet animations = new AnimationSet(
-                            Animation.getAnimation(getStringOrNull(data, "chant_animation")),
-                            Animation.getAnimation(getStringOrNull(data, "cast_animation")),
-                            Animation.getAnimation(getStringOrNull(data, "continuous_animation")),
-                            Animation.getAnimation(getStringOrNull(data, "staff_chant_animation_r")),
-                            Animation.getAnimation(getStringOrNull(data, "staff_cast_animation_r")),
-                            Animation.getAnimation(getStringOrNull(data, "staff_chant_animation_l")),
-                            Animation.getAnimation(getStringOrNull(data, "staff_cast_animation_l")),
-                            Animation.getAnimation(getStringOrNull(data, "staff_continuous_animation_r")),
-                            Animation.getAnimation(getStringOrNull(data, "staff_continuous_animation_l"))
-                    );
-
-                    SPELL_ANIMATIONS.put(spellName, animations);
+                    try {
+                        AnimationSet animations = new AnimationSet(
+                                Animation.getAnimation(getStringOrNull(data, "chant_animation")),
+                                Animation.getAnimation(getStringOrNull(data, "cast_animation")),
+                                Animation.getAnimation(getStringOrNull(data, "continuous_animation")),
+                                Animation.getAnimation(getStringOrNull(data, "staff_chant_animation_r")),
+                                Animation.getAnimation(getStringOrNull(data, "staff_cast_animation_r")),
+                                Animation.getAnimation(getStringOrNull(data, "staff_chant_animation_l")),
+                                Animation.getAnimation(getStringOrNull(data, "staff_cast_animation_l")),
+                                Animation.getAnimation(getStringOrNull(data, "staff_continuous_animation_r")),
+                                Animation.getAnimation(getStringOrNull(data, "staff_continuous_animation_l"))
+                        );
+                        
+                        SPELL_ANIMATIONS.put(spellName, animations);
+                    } catch (Exception e) {
+                        LOGGER.warn("Failed to load animations for spell '{}': {}", spellName, e.getMessage());
+                        // Skip this spell if animation loading fails
+                    }
                 });
             }
         });
@@ -73,10 +78,49 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
         if (animations == null) {
             return SPELL_ANIMATIONS.get("default");
         }
+        
+        // If the spell has an animation set but some fields are null/invalid,
+        // fallback to the default animation for those specific fields
+        AnimationSet defaultAnimations = SPELL_ANIMATIONS.get("default");
+        if (defaultAnimations != null && hasNullFields(animations)) {
+            return createMergedAnimationSet(animations, defaultAnimations);
+        }
+        
         return animations;
+    }
+    
+    private static boolean hasNullFields(AnimationSet animations) {
+        return animations.chant() == null ||
+               animations.cast() == null ||
+               animations.continuous() == null ||
+               animations.staffChantRight() == null ||
+               animations.staffCastRight() == null ||
+               animations.staffChantLeft() == null ||
+               animations.staffCastLeft() == null ||
+               animations.staffContinuousRight() == null ||
+               animations.staffContinuousLeft() == null;
+    }
+    
+    private static AnimationSet createMergedAnimationSet(AnimationSet spellAnimations, AnimationSet defaultAnimations) {
+        return new AnimationSet(
+            spellAnimations.chant() != null ? spellAnimations.chant() : defaultAnimations.chant(),
+            spellAnimations.cast() != null ? spellAnimations.cast() : defaultAnimations.cast(),
+            spellAnimations.continuous() != null ? spellAnimations.continuous() : defaultAnimations.continuous(),
+            spellAnimations.staffChantRight() != null ? spellAnimations.staffChantRight() : defaultAnimations.staffChantRight(),
+            spellAnimations.staffCastRight() != null ? spellAnimations.staffCastRight() : defaultAnimations.staffCastRight(),
+            spellAnimations.staffChantLeft() != null ? spellAnimations.staffChantLeft() : defaultAnimations.staffChantLeft(),
+            spellAnimations.staffCastLeft() != null ? spellAnimations.staffCastLeft() : defaultAnimations.staffCastLeft(),
+            spellAnimations.staffContinuousRight() != null ? spellAnimations.staffContinuousRight() : defaultAnimations.staffContinuousRight(),
+            spellAnimations.staffContinuousLeft() != null ? spellAnimations.staffContinuousLeft() : defaultAnimations.staffContinuousLeft()
+        );
     }
 
     private String getStringOrNull(JsonObject obj, String key) {
-        return obj.has(key) ? obj.get(key).getAsString() : null;
+        if (!obj.has(key)) {
+            return null;
+        }
+        String value = obj.get(key).getAsString();
+        // Treat empty strings as null so they fallback to default animations
+        return value.isEmpty() ? null : value;
     }
 }

@@ -1,40 +1,26 @@
 package com.yukami.efiscompat.player;
 
 import com.yukami.efiscompat.EpicFightIronCompat;
-import com.yukami.efiscompat.config.CommonConfig;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.setup.Messages;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import com.yukami.efiscompat.effect.ClientVisualEffectManager;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = EpicFightIronCompat.MODID)
+@Mod.EventBusSubscriber(modid = EpicFightIronCompat.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientPlayerEvents {
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void customUseItemEvent(PlayerInteractEvent.RightClickItem event) {
-        // Your custom logic goes here
-        var entity = event.getEntity();
-        if (entity instanceof ServerPlayer) {
-            var magicData = MagicData.getPlayerMagicData(entity);
-            if (magicData.isCasting()) {
-                event.setCanceled(false);
-                Utils.serverSideCancelCast((ServerPlayer) entity, CommonConfig.castCancelCooldown || magicData.getCastType() == CastType.CONTINUOUS);
-            }
+
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            ClientVisualEffectManager.tick();
         }
     }
 
     @SubscribeEvent
-    public static void clientMouseScrolled(InputEvent.MouseScrollingEvent event) {
-        if (ClientMagicData.isCasting()) {
-            Messages.sendToServer(new ServerboundCancelCast(SpellRegistry.getSpell(ClientMagicData.getCastingSpellId()).getCastType() == CastType.CONTINUOUS));
-        }
+    public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        ClientVisualEffectManager.clearAllEffects();
     }
 }

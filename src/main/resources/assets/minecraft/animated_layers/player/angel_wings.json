@@ -1,0 +1,7 @@
+{
+	"layer_type": "epicfight:model_original",
+	"target_layer": "io.redspace.ironsspellbooks.render.AngelWingsLayer",
+	"joint": "Chest",
+	"translation": [0.0, 0.4, -0.1],
+	"rotation": [0.0, 0.0, 0.0]
+}

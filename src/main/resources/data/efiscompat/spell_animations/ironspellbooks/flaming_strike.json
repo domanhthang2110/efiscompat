@@ -2,7 +2,7 @@
   "spells": {
     "flaming_strike": {
       "chant_animation": "",
-      "cast_animation": "",
+      "cast_animation": "CASTING_ONE_HAND_INWARD",
       "continuous_animation": "",
       "staff_chant_animation_r": "",
       "staff_cast_animation_r": "",

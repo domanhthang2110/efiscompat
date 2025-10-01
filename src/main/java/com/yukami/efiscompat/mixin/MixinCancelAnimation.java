@@ -10,17 +10,17 @@ import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
 @Mixin(ServerboundCancelCast.class)
-public abstract class MixinCancelAnimation
-{
-	@Inject(method = "cancelCast", at = @At("HEAD"), remap = false)
-	private static void cancelCast(ServerPlayer serverPlayer, boolean triggerCooldown, CallbackInfo ci) {
-		if (serverPlayer != null) {
-			ServerPlayerPatch playerpatch = EpicFightCapabilities.getEntityPatch(serverPlayer, ServerPlayerPatch.class);
-			if (playerpatch != null) {
-				// Use Epic Fight's native cancellation system for highest layer animations
-				playerpatch.playAnimationSynchronized(yesman.epicfight.gameasset.Animations.OFF_ANIMATION_HIGHEST, 0.0F);
-				playerpatch.modifyLivingMotionByCurrentItem(false);
-			}
-		}
-	}
+public abstract class MixinCancelAnimation {
+    @Inject(method = "cancelCast", at = @At("HEAD"), remap = false)
+    private static void cancelCast(ServerPlayer serverPlayer, boolean triggerCooldown, CallbackInfo ci) {
+        if (serverPlayer != null) {
+            ServerPlayerPatch playerpatch = EpicFightCapabilities.getEntityPatch(serverPlayer, ServerPlayerPatch.class);
+            if (playerpatch != null) {
+                // Use Epic Fight's native cancellation system for highest layer animations
+                playerpatch.playAnimationSynchronized(yesman.epicfight.gameasset.Animations.OFF_ANIMATION_HIGHEST, 0.0F);
+                playerpatch.modifyLivingMotionByCurrentItem(false);
+            }
+
+        }
+    }
 }

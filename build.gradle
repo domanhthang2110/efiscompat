@@ -173,9 +173,9 @@ dependencies {
 
     // Apply Mixin AP
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation fg.deobf("curse.maven:epic-fight-mod-405076:6968125")
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:7046104")
     implementation fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${irons_spells_version}")
-    runtimeOnly fg.deobf("curse.maven:geckolib-388172:5675221")
+    runtimeOnly fg.deobf("curse.maven:geckolib-388172:7025129")
     //=========TO tweak and its dependency
     //runtimeOnly fg.deobf("curse.maven:to-tweaks-irons-spells-1046916:6322784")
     //runtimeOnly fg.deobf("curse.maven:lendercataclysm-551586:6370058")
@@ -199,7 +199,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:playeranimator-658587:4587214")
 
     // CURIOS *****************************************************************************************************
-    runtimeOnly fg.deobf("curse.maven:curios-309927:5680164")
+    runtimeOnly fg.deobf("curse.maven:curios-309927:6418456")
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar

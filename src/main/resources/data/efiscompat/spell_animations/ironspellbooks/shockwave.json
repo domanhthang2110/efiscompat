@@ -1,8 +1,8 @@
 ﻿{
   "spells": {
     "shockwave": {
-      "chant_animation": "",
-      "cast_animation": "",
+      "chant_animation": "CHANTING_TWO_HAND_EXPLOSION",
+      "cast_animation": "CASTING_TWO_HAND_EXPLOSION",
       "continuous_animation": "",
       "staff_chant_animation_r": "",
       "staff_cast_animation_r": "",

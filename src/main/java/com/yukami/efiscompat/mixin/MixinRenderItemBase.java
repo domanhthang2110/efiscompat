@@ -9,8 +9,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,7 +32,6 @@ public class MixinRenderItemBase {
         LivingEntity originalEntity = entitypatch.getOriginal();
         if (originalEntity instanceof LocalPlayer player) {
             if (ClientMagicData.isCasting()) {
-                var castingSpell = SpellRegistry.getSpell(ClientMagicData.getCastingSpellId());
                 ClientAnimator animator = (ClientAnimator) entitypatch.getAnimator();
                 AnimationPlayer animationPlayer = animator.baseLayer.getLayer(Layer.Priority.HIGHEST).animationPlayer;
                 AnimType animType = null;
@@ -48,8 +45,6 @@ public class MixinRenderItemBase {
                     } else if (!isHoldingStaffOffHand(player) && CommonConfig.hideOffHandItems && hand == InteractionHand.OFF_HAND) {
                         ci.cancel();
                     }
-                } else if (castingSpell.getCastType() == CastType.CONTINUOUS && CommonConfig.hideTwoHandedItems) {
-                    ci.cancel();
                 }
             }
         }

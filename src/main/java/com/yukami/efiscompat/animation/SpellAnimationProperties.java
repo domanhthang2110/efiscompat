@@ -1,4 +1,4 @@
-package com.yukami.efiscompat.anim;
+package com.yukami.efiscompat.animation;
 
 import yesman.epicfight.api.animation.property.AnimationProperty;
 

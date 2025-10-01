@@ -1,13 +1,13 @@
 ﻿{
   "spells": {
     "acid_orb": {
-      "chant_animation": "",
-      "cast_animation": "",
+      "chant_animation": "CHANTING_TWO_HAND_BACK",
+      "cast_animation": "CASTING_TWO_HAND_BACK",
       "continuous_animation": "",
-      "staff_chant_animation_r": "",
-      "staff_cast_animation_r": "",
-      "staff_chant_animation_l": "",
-      "staff_cast_animation_l": "",
+      "staff_chant_animation_r": "CHANTING_TWO_HAND_BACK",
+      "staff_cast_animation_r": "CASTING_TWO_HAND_BACK",
+      "staff_chant_animation_l": "CHANTING_TWO_HAND_BACK",
+      "staff_cast_animation_l": "CASTING_TWO_HAND_BACK",
       "staff_continuous_animation_r": "",
       "staff_continuous_animation_l": ""
     }

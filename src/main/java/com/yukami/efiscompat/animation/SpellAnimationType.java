@@ -1,4 +1,4 @@
-package com.yukami.efiscompat.anim;
+package com.yukami.efiscompat.animation;
 
 public enum SpellAnimationType {
     CHANT,
