@@ -4,7 +4,7 @@ import com.yukami.efiscompat.EpicFightIronCompat;
 import com.yukami.efiscompat.AnimType;
 import com.yukami.efiscompat.AnimProps;
 import com.yukami.efiscompat.effect.VisualEffectManager;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.AnimationManager.AnimationRegistryEvent;

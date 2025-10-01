@@ -3,11 +3,11 @@ package com.yukami.efiscompat.utils;
 import com.yukami.efiscompat.config.CommonConfig;
 import io.redspace.ironsspellbooks.item.weapons.StaffItem;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
@@ -19,14 +19,14 @@ import java.util.Objects;
 public class CompatUtils {
     public static boolean isHoldingStaffMainHand (LivingEntity player){
         if(player instanceof Player){
-            return (player.getMainHandItem().getItem() instanceof StaffItem || CommonConfig.staffWeaponList.contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(player.getMainHandItem().getItem())).toString()));
+            return (player.getMainHandItem().getItem() instanceof StaffItem || CommonConfig.staffWeaponList.contains(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(player.getMainHandItem().getItem())).toString()));
         }
         return false;
     }
 
     public static boolean isHoldingStaffOffHand (LivingEntity player){
         if(player instanceof Player) {
-            return (player.getOffhandItem().getItem() instanceof StaffItem || CommonConfig.staffWeaponList.contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(player.getOffhandItem().getItem())).toString()));
+            return (player.getOffhandItem().getItem() instanceof StaffItem || CommonConfig.staffWeaponList.contains(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(player.getOffhandItem().getItem())).toString()));
         }
         return false;
     }
