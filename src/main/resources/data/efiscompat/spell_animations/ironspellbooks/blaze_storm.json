@@ -1,0 +1,15 @@
+﻿{
+  "spells": {
+    "blaze_storm": {
+      "chant_animation": "",
+      "cast_animation": "",
+      "continuous_animation": "CONTINUOUS_TWO_HAND_PUNCHING",
+      "staff_chant_animation_r": "",
+      "staff_cast_animation_r": "",
+      "staff_chant_animation_l": "",
+      "staff_cast_animation_l": "",
+      "staff_continuous_animation_r": "CONTINUOUS_ONE_HAND_STAFF_RIGHT",
+      "staff_continuous_animation_l": "CONTINUOUS_ONE_HAND_STAFF_LEFT"
+    }
+  }
+}

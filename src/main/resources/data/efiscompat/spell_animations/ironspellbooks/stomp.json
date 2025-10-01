@@ -1,0 +1,15 @@
+﻿{
+  "spells": {
+    "stomp": {
+      "chant_animation": "CHANTING_TWO_HAND_STOMP",
+      "cast_animation": "CASTING_TWO_HAND_STOMP",
+      "continuous_animation": "",
+      "staff_chant_animation_r": "",
+      "staff_cast_animation_r": "CASTING_TWO_HAND_STOMP",
+      "staff_chant_animation_l": "",
+      "staff_cast_animation_l": "CASTING_TWO_HAND_STOMP",
+      "staff_continuous_animation_r": "",
+      "staff_continuous_animation_l": ""
+    }
+  }
+}

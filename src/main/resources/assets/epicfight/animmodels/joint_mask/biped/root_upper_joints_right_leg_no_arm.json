@@ -1,0 +1,8 @@
+{
+	"joints": [
+		"Root", "Torso", "Chest", "Head", "Tool_R", "Shoulder_L", "Arm_L", "Hand_L", "Elbow_L", "Tool_L", "Thigh_R", "Leg_R"
+	],
+	"bind_modifiers": {
+		"Root": "keep_child_locrot"
+	}
+}

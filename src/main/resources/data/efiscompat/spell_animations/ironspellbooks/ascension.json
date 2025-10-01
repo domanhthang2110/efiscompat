@@ -1,0 +1,15 @@
+﻿{
+  "spells": {
+    "ascension": {
+      "chant_animation": "",
+      "cast_animation": "CASTING_TWO_HAND_EXPLOSION",
+      "continuous_animation": "",
+      "staff_chant_animation_r": "",
+      "staff_cast_animation_r": "CASTING_TWO_HAND_EXPLOSION",
+      "staff_chant_animation_l": "",
+      "staff_cast_animation_l": "CASTING_TWO_HAND_EXPLOSION",
+      "staff_continuous_animation_r": "",
+      "staff_continuous_animation_l": ""
+    }
+  }
+}

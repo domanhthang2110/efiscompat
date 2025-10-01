@@ -1,0 +1,15 @@
+﻿{
+  "spells": {
+    "acupuncture": {
+      "chant_animation": "",
+      "cast_animation": "CASTING_TWO_HAND_TOP",
+      "continuous_animation": "",
+      "staff_chant_animation_r": "",
+      "staff_cast_animation_r": "CASTING_ONE_HAND_STAFF_FRONT_RIGHT",
+      "staff_chant_animation_l": "",
+      "staff_cast_animation_l": "CASTING_ONE_HAND_STAFF_FRONT_LEFT",
+      "staff_continuous_animation_r": "",
+      "staff_continuous_animation_l": ""
+    }
+  }
+}
