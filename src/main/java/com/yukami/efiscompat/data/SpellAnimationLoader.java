@@ -3,13 +3,12 @@ package com.yukami.efiscompat.data;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.logging.LogUtils;
+import com.yukami.efiscompat.EpicFightIronCompat;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import com.yukami.efiscompat.animation.Animation;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
-    private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new Gson();
     private static final Map<String, AnimationSet> SPELL_ANIMATIONS = new HashMap<>();
 
@@ -65,7 +63,7 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
                         
                         SPELL_ANIMATIONS.put(spellName, animations);
                     } catch (Exception e) {
-                        LOGGER.warn("Failed to load animations for spell '{}': {}", spellName, e.getMessage());
+                        EpicFightIronCompat.LOGGER.warn("Failed to load animations for spell '{}': {}", spellName, e.getMessage());
                         // Skip this spell if animation loading fails
                     }
                 });

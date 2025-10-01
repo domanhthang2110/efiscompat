@@ -223,7 +223,7 @@ dependencies {
     localRuntime "com.illusivesoulworks.caelus:caelus-neoforge:7.0.1+1.21.1"
 
     // PLAYER ANIMATOR ********************************************************************************************
-    localRuntime "dev.kosmx.player-anim:player-animation-lib:2.0.1+1.21.1"
+    localRuntime "dev.kosmx.player-anim:player-animation-lib-forge:2.0.1+1.21.1"
 
     // CURIOS *****************************************************************************************************
     localRuntime "top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1"
