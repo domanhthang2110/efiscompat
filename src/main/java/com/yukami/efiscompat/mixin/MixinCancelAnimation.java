@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
-// TODO: (1.21.1 PORT) Double-check whether that CancelPastPacket is the replacement of io.redspace.ironsspellbooks.network.ServerboundCancelCast in Forge 1.20.1
 @Mixin(CancelCastPacket.class)
 public abstract class MixinCancelAnimation {
     @Inject(method = "cancelCast", at = @At("HEAD"), remap = false)
