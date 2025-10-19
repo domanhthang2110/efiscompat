@@ -32,14 +32,13 @@ public class RenderSiphonRay {
         if (syncedData.isCasting() && SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId().equals(syncedSpellData.getCastingSpellId())) {
             poseStack.pushPose();
             poseStack.translate(0, -1.5f, 0);
-            // TODO: (1.21.1 PORT) Double-check that this behaves the same as event.getPartialTick() in Forge 1.20.1.
-            SpellRenderingHelper.renderSpellHelper(syncedSpellData, livingEntity, poseStack, buffer, event.getPartialTick().getGameTimeDeltaPartialTick(true));
+            final float partialTicks = event.getPartialTick().getGameTimeDeltaPartialTick(true);
+            SpellRenderingHelper.renderSpellHelper(syncedSpellData, livingEntity, poseStack, buffer, partialTicks);
             poseStack.popPose();
         }
     }
 
     @SubscribeEvent
-    // TODO: (1.21.1 PORT) Should this be RenderPlayerEvent.Post or RenderPlayerEvent.Pre to behave in the same way as in Forge 1.20.1?
     public static void renderRayTPS(RenderPlayerEvent.Post event) {
         if (event.getEntity() instanceof Player) {
             SyncedSpellData syncedSpellData = ClientMagicData.getSyncedSpellData(event.getEntity());

@@ -32,7 +32,6 @@ public class VisualEffectRenderer {
 
         PoseStack poseStack = event.getPoseStack();
         MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-        // TODO: (1.21.1 PORT) Double-check that this behaves the same as event.getPartialTick() in Forge 1.20.1.
         float partialTicks = event.getPartialTick().getGameTimeDeltaPartialTick(true);
         Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
 
@@ -67,8 +66,6 @@ public class VisualEffectRenderer {
         poseStack.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
         poseStack.mulPose(Axis.YP.rotationDegrees(90f));
         poseStack.translate(5, 0, 0);
-
-        // TODO: (1.21.1 PORT) Double-check that this behaves the same as before in Forge 1.20.1.
 
         PoseStack.Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
@@ -122,20 +119,18 @@ public class VisualEffectRenderer {
         poseStack.popPose();
     }
 
-    private static void drawTriangle(VertexConsumer consumer, Matrix4f poseMatrix, PoseStack.Pose pose, float size, int alpha) {
-        // TODO: (1.21.1 PORT) Double-check that this behaves the same as before in Forge 1.20.1.
-
+    private static void drawTriangle(VertexConsumer consumer, Matrix4f poseMatrix, PoseStack.Pose normal, float size, int alpha) {
         consumer.addVertex(poseMatrix, 0, 0, 0).setColor(255, 0, 255, alpha).setUv(0f, 1f)
                 .setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(pose, 0f, 1f, 0f);
+                .setNormal(normal, 0f, 1f, 0f);
         consumer.addVertex(poseMatrix, 0, 3 * size, -1 * size).setColor(0, 0, 0, 0).setUv(0f, 0f)
                 .setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(pose, 0f, 1f, 0f);
+                .setNormal(normal, 0f, 1f, 0f);
         consumer.addVertex(poseMatrix, 0, 3 * size, 1 * size).setColor(0, 0, 0, 0).setUv(1f, 0f)
                 .setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(pose, 0f, 1f, 0f);
+                .setNormal(normal, 0f, 1f, 0f);
         consumer.addVertex(poseMatrix, 0, 0, 0).setColor(255, 0, 255, alpha).setUv(1f, 1f)
                 .setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(pose, 0f, 1f, 0f);
+                .setNormal(normal, 0f, 1f, 0f);
     }
 }
