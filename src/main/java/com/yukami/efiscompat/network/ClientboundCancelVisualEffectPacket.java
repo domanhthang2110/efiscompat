@@ -1,30 +1,33 @@
 package com.yukami.efiscompat.network;
 
+import com.yukami.efiscompat.EpicFightIronCompat;
 import com.yukami.efiscompat.effect.ClientVisualEffectManager;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+public record ClientboundCancelVisualEffectPacket(int playerId) implements CustomPacketPayload {
 
-public class ClientboundCancelVisualEffectPacket {
-    private final int playerId;
+    public static final CustomPacketPayload.Type<ClientboundCancelVisualEffectPacket> TYPE = new CustomPacketPayload.Type<>(EpicFightIronCompat.id("cancel_effect"));
 
-    public ClientboundCancelVisualEffectPacket(int playerId) {
-        this.playerId = playerId;
+    public static final StreamCodec<ByteBuf, ClientboundCancelVisualEffectPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, ClientboundCancelVisualEffectPacket::playerId,
+            ClientboundCancelVisualEffectPacket::new
+    );
+
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
-    public ClientboundCancelVisualEffectPacket(FriendlyByteBuf buf) {
-        this.playerId = buf.readInt();
-    }
-
-    public void toBytes(FriendlyByteBuf buf) {
-        buf.writeInt(playerId);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            ClientVisualEffectManager.cancelEffect(playerId);
-        });
-        return true;
+    public static void handle(final ClientboundCancelVisualEffectPacket data, final IPayloadContext context) {
+        context.enqueueWork(() -> ClientVisualEffectManager.cancelEffect(data.playerId))
+                .exceptionally(e -> {
+                    EpicFightIronCompat.LOGGER.error("Failed to cancel visual effect in ClientboundCancelVisualEffectPacket.handle(): {}", e.toString());
+                    return null;
+                });
     }
 }

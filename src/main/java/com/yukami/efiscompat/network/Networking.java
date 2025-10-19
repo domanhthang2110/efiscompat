@@ -1,45 +1,45 @@
 package com.yukami.efiscompat.network;
 
-import com.yukami.efiscompat.EpicFightIronCompat;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.HandlerThread;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class Networking {
-    private static final String PROTOCOL_VERSION = "1";
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            ResourceLocation.fromNamespaceAndPath(EpicFightIronCompat.MODID, "main"),
-            () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
-    );
+    private static final String VERSION = "1";
 
-    private static int packetId = 0;
-    private static int id() {
-        return packetId++;
+    public static void register(RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar(VERSION)
+                .executesOn(HandlerThread.MAIN);
+        registrar.playToClient(
+                ClientboundVisualEffectPacket.TYPE,
+                ClientboundVisualEffectPacket.STREAM_CODEC,
+                ClientboundVisualEffectPacket::handle
+        );
+        registrar.playToClient(
+                ClientboundCancelVisualEffectPacket.TYPE,
+                ClientboundCancelVisualEffectPacket.STREAM_CODEC,
+                ClientboundCancelVisualEffectPacket::handle
+        );
     }
 
-    public static void register() {
-        INSTANCE.messageBuilder(ClientboundVisualEffectPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundVisualEffectPacket::new)
-                .encoder(ClientboundVisualEffectPacket::toBytes)
-                .consumerMainThread(ClientboundVisualEffectPacket::handle)
-                .add();
-        INSTANCE.messageBuilder(ClientboundCancelVisualEffectPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundCancelVisualEffectPacket::new)
-                .encoder(ClientboundCancelVisualEffectPacket::toBytes)
-                .consumerMainThread(ClientboundCancelVisualEffectPacket::handle)
-                .add();
+    /**
+     * Send a packet to the server.
+     */
+    public static <MSG extends CustomPacketPayload> void sendToServer(MSG message) {
+        PacketDistributor.sendToServer(message);
     }
 
-    public static <MSG> void sendToServer(MSG message) {
-        INSTANCE.sendToServer(message);
+    /**
+     * Send a packet to a specific player.
+     */
+    public static <MSG extends CustomPacketPayload> void sendToPlayer(ServerPlayer player, MSG message) {
+        PacketDistributor.sendToPlayer(player, message);
     }
 
-    public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {
-        INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+    public static <MSG extends CustomPacketPayload> void sendToPlayersTrackingEntityAndSelf(ServerPlayer player, MSG message) {
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, message);
     }
 }

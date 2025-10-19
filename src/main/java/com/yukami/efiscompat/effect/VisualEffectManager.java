@@ -3,9 +3,9 @@ package com.yukami.efiscompat.effect;
 import com.yukami.efiscompat.network.ClientboundCancelVisualEffectPacket;
 import com.yukami.efiscompat.network.ClientboundVisualEffectPacket;
 import com.yukami.efiscompat.network.Networking;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PacketDistributor;
 
 /**
  * Server-side visual effect manager for spell casting effects
@@ -28,8 +28,8 @@ public class VisualEffectManager {
      */
     public static void startBlackHoleEffect(Player player, Vec3 position, float maxScale, int durationTicks, float startScale, float endScale) {
         if (!player.level().isClientSide()) {
-            Networking.INSTANCE.send(
-                PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
+            Networking.sendToPlayersTrackingEntityAndSelf(
+                    (ServerPlayer) player,
                 new ClientboundVisualEffectPacket(position, maxScale, durationTicks, startScale, endScale, player.getId())
             );
         }
@@ -92,8 +92,8 @@ public class VisualEffectManager {
      */
     public static void cancelBlackHoleEffect(Player player) {
         if (!player.level().isClientSide()) {
-            Networking.INSTANCE.send(
-                PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
+            Networking.sendToPlayersTrackingEntityAndSelf(
+                    (ServerPlayer) player,
                 new ClientboundCancelVisualEffectPacket(player.getId())
             );
         }
