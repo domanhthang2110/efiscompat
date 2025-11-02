@@ -12,6 +12,8 @@
   ],
   "mixins": [
     "MixinCancelAnimation",
+    "MixinComboBasicAttack",
+    "MixinHotbarChangeInventory",
     "MixinDodge",
     "MixinGuard",
     "MixinOnSpellFinish"

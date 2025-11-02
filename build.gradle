@@ -1,6 +1,4 @@
 plugins {
-    id 'eclipse'
-    id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
@@ -85,6 +83,11 @@ minecraft {
         client {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
+            
+            // Disable OpenGL debug messages
+            jvmArgs '-Dorg.lwjgl.util.Debug=false'
+            jvmArgs '-Dorg.lwjgl.util.NoChecks=true'
+            jvmArgs '-Dorg.lwjgl.opengl.Display.allowSoftwareOpenGL=false'
         }
 
         server {
@@ -173,9 +176,13 @@ dependencies {
 
     // Apply Mixin AP
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation fg.deobf("curse.maven:epic-fight-mod-405076:7046104")
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:7173243")
     implementation fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${irons_spells_version}")
     runtimeOnly fg.deobf("curse.maven:geckolib-388172:7025129")
+    runtimeOnly fg.deobf("curse.maven:epicfight-nightfall-1307848:7161765")
+    compileOnly fg.deobf("curse.maven:epic-fight-invincible-1184379:7133545")
+    runtimeOnly fg.deobf("curse.maven:epic-fight-invincible-1184379:7133545")
+    runtimeOnly fg.deobf("curse.maven:epic-fight-avalon-1268823:7095000")
     //=========TO tweak and its dependency
     //runtimeOnly fg.deobf("curse.maven:to-tweaks-irons-spells-1046916:6322784")
     //runtimeOnly fg.deobf("curse.maven:lendercataclysm-551586:6370058")
