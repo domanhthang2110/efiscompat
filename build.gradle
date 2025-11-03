@@ -179,10 +179,10 @@ dependencies {
     implementation fg.deobf("curse.maven:epic-fight-mod-405076:7173243")
     implementation fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${irons_spells_version}")
     runtimeOnly fg.deobf("curse.maven:geckolib-388172:7025129")
-    runtimeOnly fg.deobf("curse.maven:epicfight-nightfall-1307848:7161765")
+    //runtimeOnly fg.deobf("curse.maven:epicfight-nightfall-1307848:7161765")
     compileOnly fg.deobf("curse.maven:epic-fight-invincible-1184379:7133545")
-    runtimeOnly fg.deobf("curse.maven:epic-fight-invincible-1184379:7133545")
-    runtimeOnly fg.deobf("curse.maven:epic-fight-avalon-1268823:7095000")
+    //runtimeOnly fg.deobf("curse.maven:epic-fight-invincible-1184379:7133545")
+    //runtimeOnly fg.deobf("curse.maven:epic-fight-avalon-1268823:7095000")
     //=========TO tweak and its dependency
     //runtimeOnly fg.deobf("curse.maven:to-tweaks-irons-spells-1046916:6322784")
     //runtimeOnly fg.deobf("curse.maven:lendercataclysm-551586:6370058")

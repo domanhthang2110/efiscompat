@@ -161,9 +161,8 @@ public class Animation {
                 .addProperty(AnimationProperty.ActionAnimationProperty.MOVE_VERTICAL, true)
                 .addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, Float.MAX_VALUE))
                 .newTimePair(0.0F, Float.MAX_VALUE)
-                    .addStateRemoveOld(EntityState.TURNING_LOCKED, false)
-                    .addStateRemoveOld(EntityState.MOVEMENT_LOCKED, false)
-                    .addState(EntityState.INACTION, false)
+                    .addState(EntityState.MOVEMENT_LOCKED, false)
+                    .addState(EntityState.TURNING_LOCKED, false)   
                 .addProperty(AnimationProperty.StaticAnimationProperty.ON_BEGIN_EVENTS, Arrays.asList(
                         AnimationEvent.SimpleEvent.create(
                                 (entitypatch, animation, params) -> {
@@ -185,6 +184,8 @@ public class Animation {
                 .addProperty(AnimProps.ANIM_TYPE, AnimType.TWO_HAND)
                 .addProperty(AnimationProperty.ActionAnimationProperty.MOVE_VERTICAL, true)
                 .addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 5.0F))
+                .newTimePair(0.0F, Float.MAX_VALUE)
+                    .addState(EntityState.CAN_SWITCH_HAND_ITEM, true)
         );
     }
 }
