@@ -176,8 +176,9 @@ dependencies {
 
     // Apply Mixin AP
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation fg.deobf("curse.maven:epic-fight-mod-405076:7173243")
-    implementation fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${irons_spells_version}")
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:7345468")
+    //implementation fg.deobf("io.redspace.ironsspellbooks:irons_spellbooks:${irons_spells_version}")
+    implementation fg.deobf("curse.maven:irons-spells-n-spellbooks-855414:7402504")
     runtimeOnly fg.deobf("curse.maven:geckolib-388172:7025129")
     //runtimeOnly fg.deobf("curse.maven:epicfight-nightfall-1307848:7161765")
     compileOnly fg.deobf("curse.maven:epic-fight-invincible-1184379:7133545")

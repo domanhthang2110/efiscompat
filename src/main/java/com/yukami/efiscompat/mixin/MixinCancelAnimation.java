@@ -1,6 +1,6 @@
 package com.yukami.efiscompat.mixin;
 
-import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
+import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
-@Mixin(ServerboundCancelCast.class)
+@Mixin(CancelCastPacket.class)
 public abstract class MixinCancelAnimation {
     @Inject(method = "cancelCast", at = @At("HEAD"), remap = false)
     private static void cancelCast(ServerPlayer serverPlayer, boolean triggerCooldown, CallbackInfo ci) {

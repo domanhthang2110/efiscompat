@@ -1,9 +1,9 @@
 package com.yukami.efiscompat.mixin;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
+import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +31,7 @@ public class MixinHotbarChangeInventory {
         if (player.level().isClientSide && player instanceof LocalPlayer) {
             if (ClientMagicData.isCasting()) {
                 // Send cancel cast packet to server (Iron's Spellbooks way)
-                Messages.sendToServer(new ServerboundCancelCast(true));               
+                PacketDistributor.sendToServer(new CancelCastPacket(true));               
             }
         }
     }
