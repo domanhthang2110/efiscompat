@@ -17,9 +17,18 @@ out
 build
 .gradle
 
+# dependencies
+epicfight-1.21.1/
+irons-spells-n-spellbooks-1.21/
+
+# webapp
+visual-editor/
+
 # other
 eclipse
 run
+runA/
+runs/
 
 # Files from Forge MDK
 forge*changelog.txt

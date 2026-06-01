@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 
 /**
  * Prevents Epic Fight skills from executing while casting spells.
@@ -19,7 +19,7 @@ import net.minecraft.network.FriendlyByteBuf;
 public class MixinSkillExecution {
 
     @Inject(method = "requestCasting", at = @At("HEAD"), cancellable = true)
-    public void preventSkillWhileCasting(ServerPlayerPatch executor, FriendlyByteBuf buf, CallbackInfoReturnable<Boolean> cir) {
+    public void preventSkillWhileCasting(ServerPlayerPatch executor, CompoundTag args, CallbackInfoReturnable<Boolean> cir) {
         if (executor.getOriginal() instanceof ServerPlayer) {
             ServerPlayer serverPlayer = (ServerPlayer) executor.getOriginal();
             MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);

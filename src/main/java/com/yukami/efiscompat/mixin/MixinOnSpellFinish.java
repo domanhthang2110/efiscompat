@@ -22,8 +22,13 @@ public class MixinOnSpellFinish {
     private void onServerCastComplete(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData, boolean cancelled, CallbackInfo ci) {
         if (entity != null){
             ServerPlayerPatch playerpatch = EpicFightCapabilities.getEntityPatch(entity, ServerPlayerPatch.class);
-            if(playerpatch != null && playerMagicData.getCastType() == CastType.CONTINUOUS) 
-                playerpatch.playAnimationSynchronized(yesman.epicfight.gameasset.Animations.OFF_ANIMATION_HIGHEST,
-                        0.0F);}
+            if(playerpatch != null) {
+                if (playerMagicData.getCastType() == CastType.LONG) {
+                    playerpatch.playAnimationSynchronized(yesman.epicfight.gameasset.Animations.OFF_ANIMATION_MIDDLE, 0.0F);
+                } else if (playerMagicData.getCastType() == CastType.CONTINUOUS) {
+                    playerpatch.playAnimationSynchronized(yesman.epicfight.gameasset.Animations.OFF_ANIMATION_MIDDLE, 0.0F);
+                    playerpatch.playAnimationSynchronized(yesman.epicfight.gameasset.Animations.OFF_ANIMATION_HIGHEST, 0.0F);
+                }
+            }}
     }
 }

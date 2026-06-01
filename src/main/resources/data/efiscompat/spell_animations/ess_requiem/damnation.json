@@ -1,0 +1,8 @@
+{
+  "spells": {
+    "damnation": {
+      "chant_animation": "BIPED_HOLD_UCHIGATANA_SHEATHING",
+      "cast_animation": "UCHIGATANA_SHEATHING_AUTO"
+    }
+  }
+}

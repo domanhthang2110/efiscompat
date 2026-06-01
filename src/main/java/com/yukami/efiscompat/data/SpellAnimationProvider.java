@@ -11,30 +11,30 @@ import static com.yukami.efiscompat.utils.CompatUtils.*;
  * Provides the correct animation for a spell based on cast type and player context
  */
 public class SpellAnimationProvider {
-    
+
     public enum AnimationType {
         CHANT,
-        CAST, 
+        CAST,
         CONTINUOUS
     }
-    
+
     /**
      * Get the appropriate animation for a spell and cast type, considering staff context
      */
-    public static AnimationAccessor<StaticAnimation> getAnimation(String spellName, AnimationType animationType, Player player) {
+    public static AnimationAccessor<? extends StaticAnimation> getAnimation(String spellName, AnimationType animationType, Player player) {
         AnimationSet animations = SpellAnimationLoader.getAnimations(spellName);
         if (animations == null) {
             return null;
         }
-        
+
         return switch (animationType) {
             case CHANT -> getChantAnimation(animations, player);
             case CAST -> getCastAnimation(animations, player);
             case CONTINUOUS -> getContinuousAnimation(animations, player);
         };
     }
-    
-    private static AnimationAccessor<StaticAnimation> getChantAnimation(AnimationSet set, Player player) {
+
+    private static AnimationAccessor<? extends StaticAnimation> getChantAnimation(AnimationSet set, Player player) {
         if (isHoldingStaffMainHand(player)) {
             return set.staffChantRight();
         } else if (isHoldingStaffOffHand(player)) {
@@ -43,7 +43,7 @@ public class SpellAnimationProvider {
         return set.chant();
     }
 
-    private static AnimationAccessor<StaticAnimation> getCastAnimation(AnimationSet set, Player player) {
+    private static AnimationAccessor<? extends StaticAnimation> getCastAnimation(AnimationSet set, Player player) {
         if (isHoldingStaffMainHand(player)) {
             return set.staffCastRight();
         } else if (isHoldingStaffOffHand(player)) {
@@ -52,7 +52,7 @@ public class SpellAnimationProvider {
         return set.cast();
     }
 
-    private static AnimationAccessor<StaticAnimation> getContinuousAnimation(AnimationSet set, Player player) {
+    private static AnimationAccessor<? extends StaticAnimation> getContinuousAnimation(AnimationSet set, Player player) {
         if (isHoldingStaffMainHand(player)) {
             return set.staffContinuousRight();
         } else if (isHoldingStaffOffHand(player)) {

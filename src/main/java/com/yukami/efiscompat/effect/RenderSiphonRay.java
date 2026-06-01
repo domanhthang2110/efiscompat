@@ -11,13 +11,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = EpicFightIronCompat.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = EpicFightIronCompat.MODID, value = Dist.CLIENT)
 public class RenderSiphonRay {
     @SubscribeEvent
     public static void renderRay(RenderLevelStageEvent event) {
@@ -32,12 +32,12 @@ public class RenderSiphonRay {
         if (syncedData.isCasting() && SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId().equals(syncedSpellData.getCastingSpellId())) {
             poseStack.pushPose();
             poseStack.translate(0, -1.5f, 0);
-            SpellRenderingHelper.renderSpellHelper(syncedSpellData, livingEntity, poseStack, buffer, event.getPartialTick());
+            SpellRenderingHelper.renderSpellHelper(syncedSpellData, livingEntity, poseStack, buffer, event.getPartialTick().getGameTimeDeltaPartialTick(false));
             poseStack.popPose();
         }
     }
         @SubscribeEvent
-        public static void renderRayTPS(RenderPlayerEvent event){
+        public static void renderRayTPS(RenderPlayerEvent.Post event){
             if (event.getEntity() instanceof Player) {
                 SyncedSpellData syncedSpellData = ClientMagicData.getSyncedSpellData(event.getEntity());
                 SpellRenderingHelper.renderSpellHelper(syncedSpellData, event.getEntity(), event.getPoseStack(),event.getMultiBufferSource(), event.getPartialTick());

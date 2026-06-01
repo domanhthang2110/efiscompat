@@ -12,7 +12,7 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
  * Prevents Invincible mod's ComboBasicAttack (used by Epic Fight Nightfall weapons) 
  * when the player is casting spells.
  */
-@Mixin(value = com.p1nero.invincible.skill.ComboBasicAttack.class, remap = false)
+@Mixin(targets = "com.p1nero.invincible.skill.ComboBasicAttack", remap = false, priority = 500)
 public class MixinComboBasicAttack {
 
     @Inject(method = "isExecutableState", at = @At("HEAD"), cancellable = true)

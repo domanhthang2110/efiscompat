@@ -16,7 +16,8 @@ public abstract class MixinCancelAnimation {
         if (serverPlayer != null) {
             ServerPlayerPatch playerpatch = EpicFightCapabilities.getEntityPatch(serverPlayer, ServerPlayerPatch.class);
             if (playerpatch != null) {
-                // Use Epic Fight's native cancellation system for highest layer animations
+                // Use Epic Fight's native cancellation system for composite-layer animations
+                playerpatch.playAnimationSynchronized(yesman.epicfight.gameasset.Animations.OFF_ANIMATION_MIDDLE, 0.0F);
                 playerpatch.playAnimationSynchronized(yesman.epicfight.gameasset.Animations.OFF_ANIMATION_HIGHEST, 0.0F);
                 playerpatch.modifyLivingMotionByCurrentItem(false);
             }
