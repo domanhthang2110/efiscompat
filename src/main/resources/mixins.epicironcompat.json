@@ -1,6 +1,6 @@
 {
   "required": true,
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_17",
   "package": "com.yukami.efiscompat.mixin",
   "refmap": "mixins.epicironcompat.refmap.json",
   "injectors": {
@@ -8,10 +8,7 @@
   },
   "client": [
     "MixinRenderItemBase",
-    "MixinFirstPersonRenderer",
-    "MixinPlayerAnimatorCompat",
-    "MixinIronAnimationHelper",
-    "MixinChargeSpellLayerVanilla"
+    "MixinPlayerAnimatorCompat"
   ],
   "mixins": [
     "MixinCancelAnimation",

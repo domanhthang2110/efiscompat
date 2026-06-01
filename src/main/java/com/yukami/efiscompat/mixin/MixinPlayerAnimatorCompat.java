@@ -10,8 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.client.animation.ClientAnimator;
 import yesman.epicfight.api.client.animation.Layer;
-import yesman.epicfight.api.client.event.types.render.ValidatePlayerModelEvent;
-import yesman.epicfight.compat.playeranimator.PlayerAnimatorCompat;
+import yesman.epicfight.api.client.forgeevent.RenderEpicFightPlayerEvent;
+import yesman.epicfight.compat.PlayerAnimatorCompat;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
 @Mixin(value = PlayerAnimatorCompat.class, remap = false)
@@ -20,7 +20,7 @@ public class MixinPlayerAnimatorCompat {
     private static final String EFISCOMPAT_NAMESPACE = "efiscompat";
 
     @Inject(method = "renderEvent", at = @At("HEAD"), cancellable = true)
-    private void onRenderEvent(ValidatePlayerModelEvent event, CallbackInfo ci) {
+    private void onRenderEvent(RenderEpicFightPlayerEvent event, CallbackInfo ci) {
         PlayerPatch<?> playerPatch = event.getPlayerPatch();
         if (playerPatch == null)
             return;
@@ -39,7 +39,7 @@ public class MixinPlayerAnimatorCompat {
             return;
 
         AnimationPlayer animationPlayer = highestLayer.animationPlayer;
-        if (animationPlayer == null || animationPlayer.getRealAnimation().isEmpty())
+        if (animationPlayer == null)
             return;
 
         // Keep the original approach that was working

@@ -20,9 +20,7 @@ public class MixinGuard {
         // Check if the method returned true
         if (info.getReturnValue()) {
             if (!executer.isLogicalClient()) {
-                if (!(executer.getOriginal() instanceof ServerPlayer player)) {
-                    return;
-                }
+                ServerPlayer player = (ServerPlayer) executer.getOriginal();
                 MagicData magicData = MagicData.getPlayerMagicData(player);
                 if (magicData.isCasting()) {
                     Utils.serverSideCancelCast(player, CommonConfig.castCancelCooldown || magicData.getCastType() == CastType.CONTINUOUS);

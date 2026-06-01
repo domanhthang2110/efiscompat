@@ -27,15 +27,15 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
     }
 
     public record AnimationSet(
-            AnimationAccessor<? extends StaticAnimation> chant,
-            AnimationAccessor<? extends StaticAnimation> cast,
-            AnimationAccessor<? extends StaticAnimation> continuous,
-            AnimationAccessor<? extends StaticAnimation> staffChantRight,
-            AnimationAccessor<? extends StaticAnimation> staffCastRight,
-            AnimationAccessor<? extends StaticAnimation> staffChantLeft,
-            AnimationAccessor<? extends StaticAnimation> staffCastLeft,
-            AnimationAccessor<? extends StaticAnimation> staffContinuousRight,
-            AnimationAccessor<? extends StaticAnimation> staffContinuousLeft
+            AnimationAccessor<StaticAnimation> chant,
+            AnimationAccessor<StaticAnimation> cast,
+            AnimationAccessor<StaticAnimation> continuous,
+            AnimationAccessor<StaticAnimation> staffChantRight,
+            AnimationAccessor<StaticAnimation> staffCastRight,
+            AnimationAccessor<StaticAnimation> staffChantLeft,
+            AnimationAccessor<StaticAnimation> staffCastLeft,
+            AnimationAccessor<StaticAnimation> staffContinuousRight,
+            AnimationAccessor<StaticAnimation> staffContinuousLeft
     ) {}
 
     @Override
@@ -62,7 +62,7 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
                                 Animation.getAnimation(getStringOrNull(data, "staff_continuous_animation_r")),
                                 Animation.getAnimation(getStringOrNull(data, "staff_continuous_animation_l"))
                         );
-
+                        
                         SPELL_ANIMATIONS.put(spellName, animations);
                     } catch (Exception e) {
                         LOGGER.warn("Failed to load animations for spell '{}': {}", spellName, e.getMessage());
@@ -78,17 +78,17 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
         if (animations == null) {
             return SPELL_ANIMATIONS.get("default");
         }
-
+        
         // If the spell has an animation set but some fields are null/invalid,
         // fallback to the default animation for those specific fields
         AnimationSet defaultAnimations = SPELL_ANIMATIONS.get("default");
         if (defaultAnimations != null && hasNullFields(animations)) {
             return createMergedAnimationSet(animations, defaultAnimations);
         }
-
+        
         return animations;
     }
-
+    
     private static boolean hasNullFields(AnimationSet animations) {
         return animations.chant() == null ||
                animations.cast() == null ||
@@ -100,7 +100,7 @@ public class SpellAnimationLoader extends SimpleJsonResourceReloadListener {
                animations.staffContinuousRight() == null ||
                animations.staffContinuousLeft() == null;
     }
-
+    
     private static AnimationSet createMergedAnimationSet(AnimationSet spellAnimations, AnimationSet defaultAnimations) {
         return new AnimationSet(
             spellAnimations.chant() != null ? spellAnimations.chant() : defaultAnimations.chant(),
