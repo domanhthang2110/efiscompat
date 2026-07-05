@@ -17,9 +17,9 @@ import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.Armatures;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import java.lang.reflect.Field;
 
 import yesman.epicfight.api.utils.TimePairList;
@@ -176,8 +176,9 @@ public class Animation {
             anim.addProperty(AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER,
                 (DynamicAnimation animation, LivingEntityPatch<?> entitypatch, float speed, float prevElapsedTime, float elapsedTime) -> {
                     if (animation.isLinkAnimation()) return 1.0F;
-                    if (entitypatch.getOriginal() instanceof Player player) {
-                        if (ClientMagicData.getSyncedSpellData(player).isCasting()) {
+                    if (entitypatch.getOriginal() instanceof ServerPlayer player) {
+                        MagicData magicData = MagicData.getPlayerMagicData(player);
+                        if (magicData.isCasting()) {
                             return (anim.getTotalTime() - elapsedTime) / anim.getTotalTime();
                         }
                     }

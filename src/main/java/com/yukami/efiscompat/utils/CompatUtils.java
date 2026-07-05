@@ -2,7 +2,7 @@ package com.yukami.efiscompat.utils;
 
 import com.yukami.efiscompat.config.CommonConfig;
 import io.redspace.ironsspellbooks.item.weapons.StaffItem;
-import net.minecraft.client.player.LocalPlayer;
+// import net.minecraft.client.player.LocalPlayer; // Client-only; unused deprecated helper below is disabled to keep this common utility server-safe.
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -69,12 +69,12 @@ public class CompatUtils {
         );
     }
 
-    @Deprecated(forRemoval = false)
-    public static Vec3 getJointWithTranslation(LocalPlayer renderer, Entity ent, Vec3f translation, Joint joint) {
-        if (renderer != null && ent != null && renderer.level().isClientSide) {
-            LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(ent, LivingEntityPatch.class);
-            return getJointWorldPosition(entitypatch, joint, translation, 0.0F);
-        }
-        return null;
-    }
+//    @Deprecated(forRemoval = false)
+//    public static Vec3 getJointWithTranslation(LocalPlayer renderer, Entity ent, Vec3f translation, Joint joint) {
+//        if (renderer != null && ent != null && renderer.level().isClientSide) {
+//            LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(ent, LivingEntityPatch.class);
+//            return getJointWorldPosition(entitypatch, joint, translation, 0.0F);
+//        }
+//        return null;
+//    }
 }
